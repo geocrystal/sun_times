@@ -1,6 +1,8 @@
 # sun_times
 
-TODO: Write a description here
+A [Crystal](https://crystal-lang.org) library for computing **sunrise** and **sunset** times based on
+the [NOAA Solar Calculator](https://gml.noaa.gov/grad/solcalc/) and formulas from
+Jean Meeus’ _Astronomical Algorithms (2nd Edition, 1998)_.
 
 ## Installation
 
@@ -9,7 +11,7 @@ TODO: Write a description here
    ```yaml
    dependencies:
      sun_times:
-       github: your-github-user/sun_times
+       github: geocrystal/sun_times
    ```
 
 2. Run `shards install`
@@ -18,17 +20,26 @@ TODO: Write a description here
 
 ```crystal
 require "sun_times"
+
+# Example: Paris, France
+sun = SunTimes::SunTime.new(48.87, 2.67)
+paris = Time::Location.load("Europe/Paris")
+date  = Time.local(2025, 11, 2)
+
+puts "Sunrise: #{sun.sunrise(date, paris)}"
+puts "Sunset:  #{sun.sunset(date, paris)}"
 ```
 
-TODO: Write usage instructions here
+Output:
 
-## Development
-
-TODO: Write development instructions here
+```
+Sunrise: 2025-11-02 07:37:41 +01:00
+Sunset:  2025-11-02 17:27:59 +01:00
+```
 
 ## Contributing
 
-1. Fork it (<https://github.com/your-github-user/sun_times/fork>)
+1. Fork it (<https://github.com/geocrystal/sun_times/fork>)
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
@@ -36,4 +47,4 @@ TODO: Write development instructions here
 
 ## Contributors
 
-- [Anton Maminov](https://github.com/your-github-user) - creator and maintainer
+- [Anton Maminov](https://github.com/mamantoha) - creator and maintainer
