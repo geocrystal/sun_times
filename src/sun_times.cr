@@ -96,6 +96,49 @@ module SunTimes
       from_julian(jd_set, location)
     end
 
+    # Returns the UTC or local time of solar noon (Sun's highest point) for the given date.
+    #
+    # Solar noon corresponds to the moment when the Sun crosses the local meridian.
+    # This method uses the same underlying model as sunrise/sunset calculations.
+    #
+    # Arguments:
+    #   date      - Time (only the date portion is used)
+    #   location  - Optional Time::Location for local conversion
+    #
+    # Returns:
+    #   Time of local solar noon (UTC by default)
+    #
+    # Example:
+    #   sun.solar_noon(Time.local(2025, 11, 2), paris)
+    # => 2025-11-02 12:02:30 +01:00
+    def solar_noon(date : Time, location : Time::Location? = nil) : Time
+      jd = julian_day(date)
+
+      # Approximate solar noon (local)
+      n = jd - JULIAN_EPOCH_J2000 - @longitude / 360.0
+
+      # Solar mean anomaly
+      mean_anomaly = normalize_angle(
+        MEAN_ANOMALY_AT_EPOCH + DAILY_MOTION * (jd - JULIAN_EPOCH_J2000)
+      )
+
+      # Ecliptic longitude of the Sun
+      lambda_sun = normalize_angle(
+        mean_anomaly +
+        (EQUATION_CENTER_COEFF_1 * Math.sin(mean_anomaly * DEG2RAD)) +
+        (EQUATION_CENTER_COEFF_2 * Math.sin(2 * mean_anomaly * DEG2RAD)) +
+        (EQUATION_CENTER_COEFF_3 * Math.sin(3 * mean_anomaly * DEG2RAD)) +
+        EARTH_PERIHELION_LONG + 180.0
+      )
+
+      # Compute the Julian Day for local solar noon
+      j_transit = JULIAN_EPOCH_J2000 + n +
+                  CORRECTION_ECCENTRICITY * Math.sin(mean_anomaly * DEG2RAD) -
+                  CORRECTION_OBLIQUITY * Math.sin(2 * lambda_sun * DEG2RAD)
+
+      from_julian(j_transit, location)
+    end
+
     # ---------------------------------------------------------------------------
     # INTERNAL CALCULATIONS
     # ---------------------------------------------------------------------------
