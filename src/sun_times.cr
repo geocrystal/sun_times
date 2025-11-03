@@ -9,6 +9,15 @@
 # Accuracy: typically within ±1 minute of NOAA reference data.
 
 module SunTimes
+  # Exception raised when sunrise/sunset calculations cannot be performed
+  # (e.g., polar night or polar day).
+  class CalculationError < Exception
+  end
+
+  # Exception raised when invalid input is provided (e.g., invalid Julian Day).
+  class InvalidInputError < Exception
+  end
+
   class SunTime
     getter latitude : Float64
     getter longitude : Float64
@@ -81,14 +90,14 @@ module SunTimes
     #   Time in UTC or converted to the provided location.
     #
     # Raises:
-    #   ArgumentError if there is no sunrise (polar night or polar day).
+    #   CalculationError if there is no sunrise (polar night or polar day).
     #
     # Example:
     #   sun.sunrise(Time.local(2025, 11, 2))
     # => 2025-11-02 06:37:00 UTC
     def sunrise(date : Time, location : Time::Location? = nil) : Time
       jd_rise = calculate(date, rise: true)
-      raise ArgumentError.new("No sunrise occurs on this date for this location (polar night/day)") if jd_rise.nan?
+      raise CalculationError.new("No sunrise occurs on this date for this location (polar night/day)") if jd_rise.nan?
       from_julian(jd_rise, location)
     end
 
@@ -97,10 +106,10 @@ module SunTimes
     # Arguments and behavior are identical to `#sunrise`.
     #
     # Raises:
-    #   ArgumentError if there is no sunset (polar night or polar day).
+    #   CalculationError if there is no sunset (polar night or polar day).
     def sunset(date : Time, location : Time::Location? = nil) : Time
       jd_set = calculate(date, rise: false)
-      raise ArgumentError.new("No sunset occurs on this date for this location (polar night/day)") if jd_set.nan?
+      raise CalculationError.new("No sunset occurs on this date for this location (polar night/day)") if jd_set.nan?
       from_julian(jd_set, location)
     end
 
@@ -263,10 +272,10 @@ module SunTimes
     #   location - Optional Time::Location to return local time
     #
     # Raises:
-    #   ArgumentError if jd is NaN or infinite.
+    #   InvalidInputError if jd is NaN or infinite.
     private def from_julian(jd : Float64, location : Time::Location?) : Time
-      raise ArgumentError.new("Invalid Julian Day: NaN") if jd.nan?
-      raise ArgumentError.new("Invalid Julian Day: infinite") if jd.infinite?
+      raise InvalidInputError.new("Invalid Julian Day: NaN") if jd.nan?
+      raise InvalidInputError.new("Invalid Julian Day: infinite") if jd.infinite?
 
       days_since_epoch = jd - JULIAN_UNIX_EPOCH
       seconds = days_since_epoch * SECONDS_PER_DAY

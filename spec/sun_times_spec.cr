@@ -65,4 +65,25 @@ describe SunTimes::SunTime do
     # Polar night → no daylight
     length.should eq Time::Span.zero
   end
+
+  it "raises CalculationError for sunrise when there is no sunrise (polar night)" do
+    # Example: Very high latitude during polar night
+    sun = SunTimes::SunTime.new(85.0, 0.0)
+    utc = Time::Location.load("UTC")
+    date = Time.local(2025, 12, 21, location: utc) # Winter solstice
+
+    expect_raises(SunTimes::CalculationError, "No sunrise occurs on this date for this location") do
+      sun.sunrise(date, utc)
+    end
+  end
+
+  it "raises CalculationError for sunset when there is no sunset (polar night)" do
+    sun = SunTimes::SunTime.new(85.0, 0.0)
+    utc = Time::Location.load("UTC")
+    date = Time.local(2025, 12, 21, location: utc)
+
+    expect_raises(SunTimes::CalculationError, "No sunset occurs on this date for this location") do
+      sun.sunset(date, utc)
+    end
+  end
 end
