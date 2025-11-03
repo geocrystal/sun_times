@@ -237,7 +237,7 @@ module SunTimes
     #
     # Implements the standard USNO/Meeus algorithm.
     private def julian_day(date : Time) : Float64
-      date += 1.day
+      date = date + 1.day
       y = date.year
       m = date.month
       d = date.day
@@ -270,7 +270,8 @@ module SunTimes
 
       days_since_epoch = jd - JULIAN_UNIX_EPOCH
       seconds = days_since_epoch * SECONDS_PER_DAY
-      t = Time.unix(seconds.to_i)
+      nanoseconds = (seconds * 1_000_000_000).to_i64
+      t = Time.unix_ns(nanoseconds)
       location ? t.in(location) : t
     end
 
