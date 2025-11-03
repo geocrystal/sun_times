@@ -110,7 +110,7 @@ module SunTimes
     #
     # Example:
     #   sun.solar_noon(Time.local(2025, 11, 2), paris)
-    # => 2025-11-02 12:02:30 +01:00
+    # => 2025-11-02 12:32:50 +01:00
     def solar_noon(date : Time, location : Time::Location? = nil) : Time
       jd = julian_day(date)
 
