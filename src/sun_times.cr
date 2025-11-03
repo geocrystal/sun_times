@@ -159,6 +159,7 @@ module SunTimes
     #
     # Implements the standard USNO/Meeus algorithm.
     private def julian_day(date : Time) : Float64
+      date += 1.day
       y = date.year
       m = date.month
       d = date.day
@@ -195,11 +196,3 @@ module SunTimes
     end
   end
 end
-
-# Example usage
-sun = SunTimes::SunTime.new(48.87, 2.67) # Paris
-location = Time::Location.load("Europe/Paris")
-date = Time.local(2025, 11, 4, 0, 0, 0, location: location)
-
-puts "Sunrise: #{sun.sunrise(date, location)}"
-puts "Sunset:  #{sun.sunset(date, location)}"
