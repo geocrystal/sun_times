@@ -139,6 +139,26 @@ module SunTimes
       from_julian(j_transit, location)
     end
 
+    # Returns the duration of daylight (time between sunrise and sunset)
+    # for the given date and location.
+    #
+    # Arguments:
+    #   date      - Time (only date portion is used)
+    #   location  - Optional Time::Location for local conversion
+    #
+    # Returns:
+    #   Time::Span representing total daylight duration.
+    #
+    # Example:
+    #   sun.day_length(Time.local(2025, 11, 2), paris)
+    # => 9 hours, 50 minutes (approx)
+    def day_length(date : Time, location : Time::Location? = nil) : Time::Span
+      rise = sunrise(date, location)
+      set = sunset(date, location)
+
+      set - rise
+    end
+
     # ---------------------------------------------------------------------------
     # INTERNAL CALCULATIONS
     # ---------------------------------------------------------------------------

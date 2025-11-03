@@ -40,4 +40,17 @@ describe SunTimes::SunTime do
     # Compare to known reference
     (noon - expected_noon).abs.should be < tolerance
   end
+
+  it "computes day length correctly for Paris" do
+    sun = SunTimes::SunTime.new(48.87, 2.67)
+    paris = Time::Location.load("Europe/Paris")
+    date = Time.local(2025, 11, 2, location: paris)
+
+    length = sun.day_length(date, paris)
+
+    expected_length = 9.hours + 50.minutes
+    tolerance = 2.minutes
+
+    (length - expected_length).abs.should be < tolerance
+  end
 end
