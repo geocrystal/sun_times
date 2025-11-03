@@ -53,4 +53,16 @@ describe SunTimes::SunTime do
 
     (length - expected_length).abs.should be < tolerance
   end
+
+  it "returns zero day length for polar regions in winter" do
+    # Example: Longyearbyen, Svalbard (78° N)
+    sun = SunTimes::SunTime.new(78.22, 15.65)
+    svalbard = Time::Location.load("Europe/Oslo")
+    date = Time.local(2025, 12, 15, location: svalbard)
+
+    length = sun.day_length(date, svalbard)
+
+    # Polar night → no daylight
+    length.should eq Time::Span.zero
+  end
 end

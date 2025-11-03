@@ -80,19 +80,27 @@ module SunTimes
     # Returns:
     #   Time in UTC or converted to the provided location.
     #
+    # Raises:
+    #   ArgumentError if there is no sunrise (polar night or polar day).
+    #
     # Example:
     #   sun.sunrise(Time.local(2025, 11, 2))
     # => 2025-11-02 06:37:00 UTC
     def sunrise(date : Time, location : Time::Location? = nil) : Time
       jd_rise = calculate(date, rise: true)
+      raise ArgumentError.new("No sunrise occurs on this date for this location (polar night/day)") if jd_rise.nan?
       from_julian(jd_rise, location)
     end
 
     # Returns the UTC time of sunset for the given date.
     #
     # Arguments and behavior are identical to `#sunrise`.
+    #
+    # Raises:
+    #   ArgumentError if there is no sunset (polar night or polar day).
     def sunset(date : Time, location : Time::Location? = nil) : Time
       jd_set = calculate(date, rise: false)
+      raise ArgumentError.new("No sunset occurs on this date for this location (polar night/day)") if jd_set.nan?
       from_julian(jd_set, location)
     end
 
@@ -148,13 +156,20 @@ module SunTimes
     #
     # Returns:
     #   Time::Span representing total daylight duration.
+    #   Returns zero if there is no sunrise/sunset (polar night or polar day).
     #
     # Example:
     #   sun.day_length(Time.local(2025, 11, 2), paris)
     # => 9 hours, 50 minutes (approx)
     def day_length(date : Time, location : Time::Location? = nil) : Time::Span
-      rise = sunrise(date, location)
-      set = sunset(date, location)
+      jd_rise = calculate(date, rise: true)
+      jd_set = calculate(date, rise: false)
+
+      # If there's no sunrise or sunset (polar night/day), return zero
+      return Time::Span.zero if jd_rise.nan? || jd_set.nan?
+
+      rise = from_julian(jd_rise, location)
+      set = from_julian(jd_set, location)
 
       set - rise
     end
@@ -246,7 +261,13 @@ module SunTimes
     # Arguments:
     #   jd       - Julian Day (floating-point day count)
     #   location - Optional Time::Location to return local time
+    #
+    # Raises:
+    #   ArgumentError if jd is NaN or infinite.
     private def from_julian(jd : Float64, location : Time::Location?) : Time
+      raise ArgumentError.new("Invalid Julian Day: NaN") if jd.nan?
+      raise ArgumentError.new("Invalid Julian Day: infinite") if jd.infinite?
+
       days_since_epoch = jd - JULIAN_UNIX_EPOCH
       seconds = days_since_epoch * SECONDS_PER_DAY
       t = Time.unix(seconds.to_i)
