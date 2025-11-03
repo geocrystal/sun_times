@@ -1,0 +1,9 @@
+name: sun_times
+version: 0.1.0
+
+authors:
+  - Anton Maminov <anton.linux@gmail.com>
+
+crystal: '>= 1.19.0-dev'
+
+license: MIT
