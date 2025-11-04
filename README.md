@@ -53,3 +53,7 @@ Sunset:  2025-11-02 17:27:59 +01:00
 ## Contributors
 
 - [Anton Maminov](https://github.com/mamantoha) - creator and maintainer
+
+## License
+
+This library is distributed under the MIT license. Please see the LICENSE file.
