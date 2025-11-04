@@ -1,6 +1,14 @@
 require "./spec_helper"
 
 describe SunTimes::SunTime do
+  it "can be initialized from a tuple" do
+    coords = {48.87, 2.67}
+    sun = SunTimes::SunTime.new(coords)
+
+    sun.latitude.should eq 48.87
+    sun.longitude.should eq 2.67
+  end
+
   it "computes correct sunrise and sunset times for Paris" do
     sun = SunTimes::SunTime.new(48.87, 2.67)
     paris = Time::Location.load("Europe/Paris")
@@ -16,6 +24,22 @@ describe SunTimes::SunTime do
 
     (sunrise - expected_sunrise).abs.should be < tolerance
     (sunset - expected_sunset).abs.should be < tolerance
+  end
+
+  it "produces same results when initialized from tuple vs parameters" do
+    paris = Time::Location.load("Europe/Paris")
+    date = Time.local(2025, 11, 2, location: paris)
+
+    sun1 = SunTimes::SunTime.new(48.87, 2.67)
+    sun2 = SunTimes::SunTime.new({48.87, 2.67})
+
+    sunrise1 = sun1.sunrise(date, paris)
+    sunrise2 = sun2.sunrise(date, paris)
+    sunset1 = sun1.sunset(date, paris)
+    sunset2 = sun2.sunset(date, paris)
+
+    sunrise1.should eq sunrise2
+    sunset1.should eq sunset2
   end
 
   it "computes solar noon correctly for Paris" do

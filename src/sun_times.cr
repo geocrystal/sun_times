@@ -72,8 +72,17 @@ module SunTimes
     # Longitude: degrees east (negative for west)
     #
     # Example:
-    #   SunTimes::SunTime.new(48.87, 2.67) # Paris
+    # ```
+    # SunTimes::SunTime.new(48.87, 2.67)   # Paris
+    # SunTimes::SunTime.new({48.87, 2.67}) # Paris
+    # ```
     def initialize(@latitude : Float64, @longitude : Float64)
+    end
+
+    # :ditto:
+    def initialize(coords : Tuple(Float64, Float64))
+      @latitude = coords[0]
+      @longitude = coords[1]
     end
 
     # ---------------------------------------------------------------------------

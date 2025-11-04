@@ -26,6 +26,7 @@ Jean Meeus’ _Astronomical Algorithms (2nd Edition, 1998)_.
 require "sun_times"
 
 # Example: Paris, France
+# SunTime.new(latitude : Float64, longitude : Float64)
 sun = SunTimes::SunTime.new(48.87, 2.67)
 paris = Time::Location.load("Europe/Paris")
 date  = Time.local(2025, 11, 2)
