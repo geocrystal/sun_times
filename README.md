@@ -1,5 +1,7 @@
 # sun_times
 
+[![Crystal CI](https://github.com/geocrystal/sun_times/actions/workflows/crystal.yml/badge.svg)](https://github.com/geocrystal/sun_times/actions/workflows/crystal.yml)
+
 A [Crystal](https://crystal-lang.org) library for computing **sunrise** and **sunset** times based on
 the [NOAA Solar Calculator](https://gml.noaa.gov/grad/solcalc/) and formulas from
 Jean Meeus’ _Astronomical Algorithms (2nd Edition, 1998)_.
