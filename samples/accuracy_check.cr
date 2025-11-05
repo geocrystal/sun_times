@@ -3,8 +3,16 @@ require "../src/sun_times"
 # Test locations with known reference data from NOAA Solar Calculator
 # https://gml.noaa.gov/grad/solcalc/
 
-def check_accuracy(name : String, lat : Float64, lon : Float64, date : Time, location : Time::Location,
-                   ref_sunrise : Time, ref_sunset : Time, ref_solar_noon : Time)
+def check_accuracy(
+  name : String,
+  lat : Float64,
+  lon : Float64,
+  date : Time,
+  location : Time::Location,
+  ref_sunrise : Time,
+  ref_sunset : Time,
+  ref_solar_noon : Time,
+)
   sun = SunTimes::SunTime.new(lat, lon)
 
   sunrise = sun.sunrise(date, location)
@@ -58,7 +66,7 @@ check_accuracy(
   "London, UK",
   51.5, -0.13,
   date,
-  nyc,
+  london,
   Time.local(2025, 11, 5, 7, 1, 0, location: london),
   Time.local(2025, 11, 5, 16, 26, 0, location: london),
   Time.local(2025, 11, 5, 11, 44, 3, location: london)
@@ -66,12 +74,12 @@ check_accuracy(
 
 # 3. Tokyo, Japan
 tokyo = Time::Location.load("Asia/Tokyo")
-date = Time.local(2025, 11, 5, location: london)
+date = Time.local(2025, 11, 5, location: tokyo)
 check_accuracy(
   "Tokyo, Japan",
   35.7, 139.77,
   date,
-  nyc,
+  tokyo,
   Time.local(2025, 11, 5, 6, 7, 0, location: tokyo),
   Time.local(2025, 11, 5, 16, 42, 0, location: tokyo),
   Time.local(2025, 11, 5, 11, 24, 27, location: tokyo)
@@ -84,7 +92,7 @@ check_accuracy(
   "Sydney, Australia",
   -33.87, 151.22,
   date,
-  nyc,
+  sydney,
   Time.local(2025, 11, 5, 5, 51, 0, location: sydney),
   Time.local(2025, 11, 5, 19, 27, 0, location: sydney),
   Time.local(2025, 11, 5, 12, 38, 39, location: sydney)
