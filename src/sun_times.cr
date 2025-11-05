@@ -270,6 +270,7 @@ module SunTimes
         raise CalculationError.new("No astronomical dusk occurs on this date for this location")
     end
 
+    # Non-raising convenience variants that return nil when the event does not occur.
     def sunrise?(date : Time, location : Time::Location? = nil) : Time?
       jd = calculate(date, rise: true, altitude: SUN_ALTITUDE_RISE_SET)
       return nil if jd.nan?
