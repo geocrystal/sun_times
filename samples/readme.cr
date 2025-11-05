@@ -1,3 +1,4 @@
+require "json"
 require "../src/sun_times"
 
 # https://gml.noaa.gov/grad/solcalc/
@@ -53,3 +54,5 @@ if sunset_time && date < sunset_time
   daylight_left = sunset_time - date
   puts "Daylight left: #{format_time_span(daylight_left)}"
 end
+
+puts sun.events(date, location).to_json

@@ -97,6 +97,27 @@ Daylight:      9h 34m 9s
 
 ![readme](https://github.com/geocrystal/sun_times/blob/main/samples/readme.png?raw=true)
 
+You can also get all solar events as a NamedTuple using the `events` method, which is useful for serialization (e.g., JSON):
+
+```crystal
+sun.events(date, location).to_json
+```
+
+Output
+
+```json
+{
+  "astronomical_dawn":"2025-11-05T05:30:09+02:00",
+  "nautical_dawn":"2025-11-05T06:07:40+02:00",
+  "civil_dawn":"2025-11-05T06:46:02+02:00",
+  "sunrise":"2025-11-05T07:20:19+02:00",
+  "solar_noon":"2025-11-05T12:07:24+02:00",
+  "sunset":"2025-11-05T16:54:29+02:00",
+  "civil_dusk":"2025-11-05T17:28:46+02:00",
+  "nautical_dusk":"2025-11-05T18:07:08+02:00",
+  "astronomical_dusk":"2025-11-05T18:44:39+02:00"}
+```
+
 ### Twilight Periods
 
 The library supports three types of twilight periods:
