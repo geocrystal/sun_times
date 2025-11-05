@@ -9,18 +9,18 @@ describe SunTimes::SunTime do
     sun.longitude.should eq 2.67
   end
 
-  it "computes correct sunrise and sunset times for Paris" do
-    sun = SunTimes::SunTime.new(48.87, 2.67)
-    paris = Time::Location.load("Europe/Paris")
-    date = Time.local(2025, 11, 2, location: paris)
+  it "computes correct sunrise and sunset times for London" do
+    sun = SunTimes::SunTime.new(51.5, -0.13)
+    london = Time::Location.load("Europe/London")
+    date = Time.local(2025, 11, 5, location: london)
 
-    sunrise = sun.sunrise(date, paris)
-    sunset = sun.sunset(date, paris)
+    sunrise = sun.sunrise(date, london)
+    sunset = sun.sunset(date, london)
 
-    # Reference data (NOAA / timeanddate.com)
-    expected_sunrise = Time.local(2025, 11, 2, 7, 39, 0, location: paris)
-    expected_sunset = Time.local(2025, 11, 2, 17, 27, 0, location: paris)
-    tolerance = 2.minutes
+    # Reference data from NOAA Solar Calculator (apparent times)
+    expected_sunrise = Time.local(2025, 11, 5, 7, 1, 0, location: london)
+    expected_sunset = Time.local(2025, 11, 5, 16, 26, 0, location: london)
+    tolerance = 1.minute # Based on our accuracy verification
 
     (sunrise - expected_sunrise).abs.should be < tolerance
     (sunset - expected_sunset).abs.should be < tolerance
@@ -42,38 +42,39 @@ describe SunTimes::SunTime do
     sunset1.should eq sunset2
   end
 
-  it "computes solar noon correctly for Paris" do
-    sun = SunTimes::SunTime.new(48.87, 2.67)
-    paris = Time::Location.load("Europe/Paris")
-    date = Time.local(2025, 11, 2, location: paris)
+  it "computes solar noon correctly for London" do
+    sun = SunTimes::SunTime.new(51.5, -0.13)
+    london = Time::Location.load("Europe/London")
+    date = Time.local(2025, 11, 5, location: london)
 
-    sunrise = sun.sunrise(date, paris)
-    sunset = sun.sunset(date, paris)
-    noon = sun.solar_noon(date, paris)
+    sunrise = sun.sunrise(date, london)
+    sunset = sun.sunset(date, london)
+    noon = sun.solar_noon(date, london)
 
     # Expected solar noon midpoint
     midpoint = sunrise + (sunset - sunrise) / 2
 
-    # NOAA reference solar noon ≈ 12:32 local time
-    expected_noon = Time.local(2025, 11, 2, 12, 32, 0, location: paris)
-    tolerance = 2.minutes
+    # NOAA reference solar noon (apparent)
+    expected_noon = Time.local(2025, 11, 5, 11, 44, 3, location: london)
+    tolerance = 1.minute # Based on our accuracy verification
 
-    # Compare to midpoint
+    # Compare to midpoint (should be very close)
     (noon - midpoint).abs.should be < tolerance
 
-    # Compare to known reference
+    # Compare to NOAA reference
     (noon - expected_noon).abs.should be < tolerance
   end
 
-  it "computes day length correctly for Paris" do
-    sun = SunTimes::SunTime.new(48.87, 2.67)
-    paris = Time::Location.load("Europe/Paris")
-    date = Time.local(2025, 11, 2, location: paris)
+  it "computes day length correctly for London" do
+    sun = SunTimes::SunTime.new(51.5, -0.13)
+    london = Time::Location.load("Europe/London")
+    date = Time.local(2025, 11, 5, location: london)
 
-    length = sun.daylight_length(date, paris)
+    length = sun.daylight_length(date, london)
 
-    expected_length = 9.hours + 50.minutes
-    tolerance = 2.minutes
+    # Based on NOAA apparent times: 16:26 - 07:01 = 9h 25m
+    expected_length = 9.hours + 25.minutes
+    tolerance = 1.minute # Based on our accuracy verification
 
     (length - expected_length).abs.should be < tolerance
   end
