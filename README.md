@@ -6,7 +6,22 @@
 
 A simple [Crystal](https://crystal-lang.org) library for calculating 🌅 **sunrise** and 🌇 **sunset** given latitude, longitude, and date based on
 the [NOAA Solar Calculator](https://gml.noaa.gov/grad/solcalc/) and formulas from
-Jean Meeus’ _Astronomical Algorithms (2nd Edition, 1998)_.
+Jean Meeus' _Astronomical Algorithms (2nd Edition, 1998)_.
+
+## Accuracy
+
+The library's astronomical constants and algorithms follow authoritative sources (NOAA, JPL, Meeus) and were verified manually against the NOAA Solar Calculator (<https://gml.noaa.gov/grad/solcalc/>).
+
+Verification
+
+- A validation script (`samples/accuracy_check.cr`) compares calculated sunrise, sunset and solar noon against NOAA's apparent times for several locations.
+- The comparison was performed manually by running the script and checking the NOAA site for reference values.
+
+Results
+
+- Calculated times are within the margin of error and are effectively identical to NOAA's apparent times — differences are typically under 1 minute.
+- Solar noon calculations are especially close (typically within 1 minute).
+- Tested locations include New York, London, Tokyo and Sydney. Example: New York on 2025-11-05 matched NOAA apparent sunrise/sunset closely (06:31 / 16:47 local).
 
 ## Installation
 
@@ -64,21 +79,21 @@ Output:
 
 ```
 Timezone: Europe/Kyiv
-Now:      2025-11-05 12:17:00 +02:00
+Now:      2025-11-05 14:05:23 +02:00
 
 === Twilight Periods ===
-Astronomical dawn:  2025-11-05 05:29:35 +02:00
-Nautical dawn:      2025-11-05 06:07:05 +02:00
-Civil dawn:         2025-11-05 06:45:25 +02:00
-Sunrise:            2025-11-05 07:19:39 +02:00
-Solar noon:         2025-11-05 12:07:27 +02:00
-Sunset:             2025-11-05 16:55:16 +02:00
-Civil dusk:         2025-11-05 17:29:30 +02:00
-Nautical dusk:      2025-11-05 18:07:50 +02:00
-Astronomical dusk:  2025-11-05 18:45:20 +02:00
+Astronomical dawn:  2025-11-05 05:30:09 +02:00
+Nautical dawn:      2025-11-05 06:07:40 +02:00
+Civil dawn:         2025-11-05 06:46:02 +02:00
+Sunrise:            2025-11-05 07:20:19 +02:00
+Solar noon:         2025-11-05 12:07:24 +02:00
+Sunset:             2025-11-05 16:54:29 +02:00
+Civil dusk:         2025-11-05 17:28:46 +02:00
+Nautical dusk:      2025-11-05 18:07:08 +02:00
+Astronomical dusk:  2025-11-05 18:44:39 +02:00
 
 === Daylight ===
-Daylight:      9h 35m 36s
+Daylight:      9h 34m 9s
 ```
 
 ### Twilight Periods
