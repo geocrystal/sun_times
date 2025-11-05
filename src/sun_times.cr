@@ -108,9 +108,9 @@ module SunTimes
     #   sun.sunrise(Time.local(2025, 11, 2))
     # => 2025-11-02 06:37:00 UTC
     def sunrise(date : Time, location : Time::Location? = nil) : Time
-      jd_rise = calculate(date, rise: true, altitude: SUN_ALTITUDE_RISE_SET)
-      raise CalculationError.new("No sunrise occurs on this date for this location (polar night/day)") if jd_rise.nan?
-      from_julian(jd_rise, location)
+      t = sunrise?(date, location)
+      raise CalculationError.new("No sunrise occurs on this date for this location (polar night/day)") if t.nil?
+      t
     end
 
     # Returns the UTC time of sunset for the given date.
@@ -120,9 +120,9 @@ module SunTimes
     # Raises:
     #   CalculationError if there is no sunset (polar night or polar day).
     def sunset(date : Time, location : Time::Location? = nil) : Time
-      jd_set = calculate(date, rise: false, altitude: SUN_ALTITUDE_RISE_SET)
-      raise CalculationError.new("No sunset occurs on this date for this location (polar night/day)") if jd_set.nan?
-      from_julian(jd_set, location)
+      t = sunset?(date, location)
+      raise CalculationError.new("No sunset occurs on this date for this location (polar night/day)") if t.nil?
+      t
     end
 
     # Returns the UTC or local time of solar noon (Sun's highest point) for the given date.
@@ -209,17 +209,15 @@ module SunTimes
     # Raises:
     #   CalculationError if there is no civil dawn (polar night or polar day).
     def civil_dawn(date : Time, location : Time::Location? = nil) : Time
-      jd = calculate(date, rise: true, altitude: SUN_ALTITUDE_CIVIL)
-      raise CalculationError.new("No civil dawn occurs on this date for this location") if jd.nan?
-      from_julian(jd, location)
+      civil_dawn?(date, location) ||
+        raise CalculationError.new("No civil dawn occurs on this date for this location")
     end
 
     # Returns the time of civil dusk (end of civil twilight).
     # See `#civil_dawn` for details about civil twilight.
     def civil_dusk(date : Time, location : Time::Location? = nil) : Time
-      jd = calculate(date, rise: false, altitude: SUN_ALTITUDE_CIVIL)
-      raise CalculationError.new("No civil dusk occurs on this date for this location") if jd.nan?
-      from_julian(jd, location)
+      civil_dusk?(date, location) ||
+        raise CalculationError.new("No civil dusk occurs on this date for this location")
     end
 
     # Returns the time of nautical dawn (beginning of nautical twilight).
@@ -236,17 +234,15 @@ module SunTimes
     # Raises:
     #   CalculationError if there is no nautical dawn (polar night or polar day).
     def nautical_dawn(date : Time, location : Time::Location? = nil) : Time
-      jd = calculate(date, rise: true, altitude: SUN_ALTITUDE_NAUTICAL)
-      raise CalculationError.new("No nautical dawn occurs on this date for this location") if jd.nan?
-      from_julian(jd, location)
+      nautical_dawn?(date, location) ||
+        raise CalculationError.new("No nautical dawn occurs on this date for this location")
     end
 
     # Returns the time of nautical dusk (end of nautical twilight).
     # See `#nautical_dawn` for details about nautical twilight.
     def nautical_dusk(date : Time, location : Time::Location? = nil) : Time
-      jd = calculate(date, rise: false, altitude: SUN_ALTITUDE_NAUTICAL)
-      raise CalculationError.new("No nautical dusk occurs on this date for this location") if jd.nan?
-      from_julian(jd, location)
+      nautical_dusk?(date, location) ||
+        raise CalculationError.new("No nautical dusk occurs on this date for this location")
     end
 
     # Returns the time of astronomical dawn (beginning of astronomical twilight).
@@ -263,16 +259,62 @@ module SunTimes
     # Raises:
     #   CalculationError if there is no astronomical dawn (polar night or polar day).
     def astronomical_dawn(date : Time, location : Time::Location? = nil) : Time
-      jd = calculate(date, rise: true, altitude: SUN_ALTITUDE_ASTRONOMICAL)
-      raise CalculationError.new("No astronomical dawn occurs on this date for this location") if jd.nan?
-      from_julian(jd, location)
+      astronomical_dawn?(date, location) ||
+        raise CalculationError.new("No astronomical dawn occurs on this date for this location")
     end
 
     # Returns the time of astronomical dusk (end of astronomical twilight).
     # See `#astronomical_dawn` for details about astronomical twilight.
     def astronomical_dusk(date : Time, location : Time::Location? = nil) : Time
+      astronomical_dusk?(date, location) ||
+        raise CalculationError.new("No astronomical dusk occurs on this date for this location")
+    end
+
+    def sunrise?(date : Time, location : Time::Location? = nil) : Time?
+      jd = calculate(date, rise: true, altitude: SUN_ALTITUDE_RISE_SET)
+      return nil if jd.nan?
+      from_julian(jd, location)
+    end
+
+    def sunset?(date : Time, location : Time::Location? = nil) : Time?
+      jd = calculate(date, rise: false, altitude: SUN_ALTITUDE_RISE_SET)
+      return nil if jd.nan?
+      from_julian(jd, location)
+    end
+
+    def civil_dawn?(date : Time, location : Time::Location? = nil) : Time?
+      jd = calculate(date, rise: true, altitude: SUN_ALTITUDE_CIVIL)
+      return nil if jd.nan?
+      from_julian(jd, location)
+    end
+
+    def civil_dusk?(date : Time, location : Time::Location? = nil) : Time?
+      jd = calculate(date, rise: false, altitude: SUN_ALTITUDE_CIVIL)
+      return nil if jd.nan?
+      from_julian(jd, location)
+    end
+
+    def nautical_dawn?(date : Time, location : Time::Location? = nil) : Time?
+      jd = calculate(date, rise: true, altitude: SUN_ALTITUDE_NAUTICAL)
+      return nil if jd.nan?
+      from_julian(jd, location)
+    end
+
+    def nautical_dusk?(date : Time, location : Time::Location? = nil) : Time?
+      jd = calculate(date, rise: false, altitude: SUN_ALTITUDE_NAUTICAL)
+      return nil if jd.nan?
+      from_julian(jd, location)
+    end
+
+    def astronomical_dawn?(date : Time, location : Time::Location? = nil) : Time?
+      jd = calculate(date, rise: true, altitude: SUN_ALTITUDE_ASTRONOMICAL)
+      return nil if jd.nan?
+      from_julian(jd, location)
+    end
+
+    def astronomical_dusk?(date : Time, location : Time::Location? = nil) : Time?
       jd = calculate(date, rise: false, altitude: SUN_ALTITUDE_ASTRONOMICAL)
-      raise CalculationError.new("No astronomical dusk occurs on this date for this location") if jd.nan?
+      return nil if jd.nan?
       from_julian(jd, location)
     end
 

@@ -345,6 +345,62 @@ describe SunTimes::SunTime do
     (length == 24.hours || length == 0.seconds).should be_true
   end
 
+  it "provides non-raising `?` variants that match raising methods for normal locations" do
+    sun = SunTimes::SunTime.new(48.87, 2.67) # Paris
+    paris = Time::Location.load("Europe/Paris")
+    date = Time.local(2025, 11, 2, location: paris)
+
+    # Raising variants
+    sunrise = sun.sunrise(date, paris)
+    sunset = sun.sunset(date, paris)
+    civil_dawn = sun.civil_dawn(date, paris)
+    civil_dusk = sun.civil_dusk(date, paris)
+    nautical_dawn = sun.nautical_dawn(date, paris)
+    nautical_dusk = sun.nautical_dusk(date, paris)
+    astronomical_dawn = sun.astronomical_dawn(date, paris)
+    astronomical_dusk = sun.astronomical_dusk(date, paris)
+
+    # ? variants should return times and match
+    sun.sunrise?(date, paris).should be_a(Time)
+    sun.sunrise?(date, paris).should eq sunrise
+
+    sun.sunset?(date, paris).should be_a(Time)
+    sun.sunset?(date, paris).should eq sunset
+
+    sun.civil_dawn?(date, paris).should be_a(Time)
+    sun.civil_dawn?(date, paris).should eq civil_dawn
+
+    sun.civil_dusk?(date, paris).should be_a(Time)
+    sun.civil_dusk?(date, paris).should eq civil_dusk
+
+    sun.nautical_dawn?(date, paris).should be_a(Time)
+    sun.nautical_dawn?(date, paris).should eq nautical_dawn
+
+    sun.nautical_dusk?(date, paris).should be_a(Time)
+    sun.nautical_dusk?(date, paris).should eq nautical_dusk
+
+    sun.astronomical_dawn?(date, paris).should be_a(Time)
+    sun.astronomical_dawn?(date, paris).should eq astronomical_dawn
+
+    sun.astronomical_dusk?(date, paris).should be_a(Time)
+    sun.astronomical_dusk?(date, paris).should eq astronomical_dusk
+  end
+
+  it "`?` variants return nil during midnight sun (Tromsø)" do
+    sun = SunTimes::SunTime.new(69.6492, 18.9553) # Tromsø
+    oslo = Time::Location.load("Europe/Oslo")
+    date = Time.local(2025, 6, 21, location: oslo)
+
+    sun.sunrise?(date, oslo).should be_nil
+    sun.sunset?(date, oslo).should be_nil
+    sun.civil_dawn?(date, oslo).should be_nil
+    sun.civil_dusk?(date, oslo).should be_nil
+    sun.nautical_dawn?(date, oslo).should be_nil
+    sun.nautical_dusk?(date, oslo).should be_nil
+    sun.astronomical_dawn?(date, oslo).should be_nil
+    sun.astronomical_dusk?(date, oslo).should be_nil
+  end
+
   it "verifies correct order of all twilight periods" do
     sun = SunTimes::SunTime.new(51.5, -0.13) # London
     london = Time::Location.load("Europe/London")
