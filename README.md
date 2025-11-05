@@ -25,22 +25,69 @@ Jean Meeus’ _Astronomical Algorithms (2nd Edition, 1998)_.
 ```crystal
 require "sun_times"
 
-# Example: Paris, France
+# Example: Lviv, Ukraine
 # SunTime.new(latitude : Float64, longitude : Float64)
-sun = SunTimes::SunTime.new(48.87, 2.67)
-paris = Time::Location.load("Europe/Paris")
-date  = Time.local(2025, 11, 2)
+sun = SunTimes::SunTime.new(49.8419, 24.0311)
+location = Time::Location.load("Europe/Kyiv")
+date = Time.local
 
-puts "Sunrise: #{sun.sunrise(date, paris)}"
-puts "Sunset:  #{sun.sunset(date, paris)}"
+astronomical_dawn_time = sun.astronomical_dawn(date, location)
+nautical_dawn_time = sun.nautical_dawn(date, location)
+civil_dawn_time = sun.civil_dawn(date, location)
+sunrise_time = sun.sunrise(date, location)
+solar_noon_time = sun.solar_noon(date, location)
+sunset_time = sun.sunset(date, location)
+civil_dusk_time = sun.civil_dusk(date, location)
+nautical_dusk_time = sun.nautical_dusk(date, location)
+astronomical_dusk_time = sun.astronomical_dusk(date, location)
+daylight_length = sun.daylight_length(date, location)
+
+puts "Timezone: #{location}"
+puts "Now:      #{date}"
+puts
+puts "=== Twilight Periods ==="
+puts "Astronomical dawn:  #{astronomical_dawn_time}"
+puts "Nautical dawn:      #{nautical_dawn_time}"
+puts "Civil dawn:         #{civil_dawn_time}"
+puts "Sunrise:            #{sunrise_time}"
+puts "Solar noon:         #{solar_noon_time}"
+puts "Sunset:             #{sunset_time}"
+puts "Civil dusk:         #{civil_dusk_time}"
+puts "Nautical dusk:      #{nautical_dusk_time}"
+puts "Astronomical dusk:  #{astronomical_dusk_time}"
+puts ""
+puts "=== Daylight ==="
+puts "Daylight:      #{daylight_length}"
 ```
 
 Output:
 
 ```
-Sunrise: 2025-11-02 07:37:41 +01:00
-Sunset:  2025-11-02 17:27:59 +01:00
+Timezone: Europe/Kyiv
+Now:      2025-11-05 12:17:00 +02:00
+
+=== Twilight Periods ===
+Astronomical dawn:  2025-11-05 05:29:35 +02:00
+Nautical dawn:      2025-11-05 06:07:05 +02:00
+Civil dawn:         2025-11-05 06:45:25 +02:00
+Sunrise:            2025-11-05 07:19:39 +02:00
+Solar noon:         2025-11-05 12:07:27 +02:00
+Sunset:             2025-11-05 16:55:16 +02:00
+Civil dusk:         2025-11-05 17:29:30 +02:00
+Nautical dusk:      2025-11-05 18:07:50 +02:00
+Astronomical dusk:  2025-11-05 18:45:20 +02:00
+
+=== Daylight ===
+Daylight:      9h 35m 36s
 ```
+
+### Twilight Periods
+
+The library supports three types of twilight periods:
+
+- **Civil twilight** (sun 6° below horizon): Enough light for most outdoor activities
+- **Nautical twilight** (sun 12° below horizon): Horizon is still visible for navigation
+- **Astronomical twilight** (sun 18° below horizon): Sky is dark enough for astronomical observations
 
 ## Contributing
 

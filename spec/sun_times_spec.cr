@@ -242,4 +242,83 @@ describe SunTimes::SunTime do
       true.should be_true
     end
   end
+
+  it "computes civil twilight times correctly" do
+    sun = SunTimes::SunTime.new(48.87, 2.67) # Paris
+    paris = Time::Location.load("Europe/Paris")
+    date = Time.local(2025, 11, 2, location: paris)
+
+    civil_dawn = sun.civil_dawn(date, paris)
+    civil_dusk = sun.civil_dusk(date, paris)
+    sunrise = sun.sunrise(date, paris)
+    sunset = sun.sunset(date, paris)
+
+    # Civil dawn should be before sunrise
+    civil_dawn.should be < sunrise
+
+    # Civil dusk should be after sunset
+    civil_dusk.should be > sunset
+
+    # Times should be reasonable (civil dawn before 8 AM, civil dusk at or after 6 PM for November in Paris)
+    civil_dawn.hour.should be < 8
+    civil_dusk.hour.should be >= 18
+  end
+
+  it "computes nautical twilight times correctly" do
+    sun = SunTimes::SunTime.new(48.87, 2.67) # Paris
+    paris = Time::Location.load("Europe/Paris")
+    date = Time.local(2025, 11, 2, location: paris)
+
+    nautical_dawn = sun.nautical_dawn(date, paris)
+    nautical_dusk = sun.nautical_dusk(date, paris)
+    civil_dawn = sun.civil_dawn(date, paris)
+    civil_dusk = sun.civil_dusk(date, paris)
+
+    # Nautical dawn should be before civil dawn
+    nautical_dawn.should be < civil_dawn
+
+    # Nautical dusk should be after civil dusk
+    nautical_dusk.should be > civil_dusk
+  end
+
+  it "computes astronomical twilight times correctly" do
+    sun = SunTimes::SunTime.new(48.87, 2.67) # Paris
+    paris = Time::Location.load("Europe/Paris")
+    date = Time.local(2025, 11, 2, location: paris)
+
+    astronomical_dawn = sun.astronomical_dawn(date, paris)
+    astronomical_dusk = sun.astronomical_dusk(date, paris)
+    nautical_dawn = sun.nautical_dawn(date, paris)
+    nautical_dusk = sun.nautical_dusk(date, paris)
+
+    # Astronomical dawn should be before nautical dawn
+    astronomical_dawn.should be < nautical_dawn
+
+    # Astronomical dusk should be after nautical dusk
+    astronomical_dusk.should be > nautical_dusk
+  end
+
+  it "verifies correct order of all twilight periods" do
+    sun = SunTimes::SunTime.new(48.87, 2.67) # Paris
+    paris = Time::Location.load("Europe/Paris")
+    date = Time.local(2025, 11, 2, location: paris)
+
+    astronomical_dawn = sun.astronomical_dawn(date, paris)
+    nautical_dawn = sun.nautical_dawn(date, paris)
+    civil_dawn = sun.civil_dawn(date, paris)
+    sunrise = sun.sunrise(date, paris)
+    sunset = sun.sunset(date, paris)
+    civil_dusk = sun.civil_dusk(date, paris)
+    nautical_dusk = sun.nautical_dusk(date, paris)
+    astronomical_dusk = sun.astronomical_dusk(date, paris)
+
+    # Verify correct chronological order
+    astronomical_dawn.should be < nautical_dawn
+    nautical_dawn.should be < civil_dawn
+    civil_dawn.should be < sunrise
+    sunrise.should be < sunset
+    sunset.should be < civil_dusk
+    civil_dusk.should be < nautical_dusk
+    nautical_dusk.should be < astronomical_dusk
+  end
 end

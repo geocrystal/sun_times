@@ -33,14 +33,17 @@ module SunTimes
     # Astronomical constants (Meeus / NOAA)
     # ---------------------------------------------------------------------------
 
-    JULIAN_EPOCH_J2000      = 2_451_545.0 # Julian Day of J2000.0 epoch (2000-01-01 12:00 TT)
-    MEAN_ANOMALY_AT_EPOCH   =    357.5291 # Earth's mean anomaly at J2000.0 (deg)
-    DAILY_MOTION            =  0.98560028 # Average orbital motion (deg/day)
-    EARTH_PERIHELION_LONG   =    102.9372 # Longitude of Earth's perihelion (deg)
-    OBLIQUITY               =       23.44 # Mean axial tilt (deg)
-    SUN_ALTITUDE_RISE_SET   =      -0.833 # Apparent altitude at sunrise/sunset (deg)
-    CORRECTION_ECCENTRICITY =      0.0053 # Empirical correction for eccentricity
-    CORRECTION_OBLIQUITY    =      0.0069 # Empirical correction for obliquity
+    JULIAN_EPOCH_J2000        = 2_451_545.0 # Julian Day of J2000.0 epoch (2000-01-01 12:00 TT)
+    MEAN_ANOMALY_AT_EPOCH     =    357.5291 # Earth's mean anomaly at J2000.0 (deg)
+    DAILY_MOTION              =  0.98560028 # Average orbital motion (deg/day)
+    EARTH_PERIHELION_LONG     =    102.9372 # Longitude of Earth's perihelion (deg)
+    OBLIQUITY                 =       23.44 # Mean axial tilt (deg)
+    SUN_ALTITUDE_RISE_SET     =      -0.833 # Apparent altitude at sunrise/sunset (deg)
+    SUN_ALTITUDE_CIVIL        =        -6.0 # Civil twilight (sun 6° below horizon)
+    SUN_ALTITUDE_NAUTICAL     =       -12.0 # Nautical twilight (sun 12° below horizon)
+    SUN_ALTITUDE_ASTRONOMICAL =       -18.0 # Astronomical twilight (sun 18° below horizon)
+    CORRECTION_ECCENTRICITY   =      0.0053 # Empirical correction for eccentricity
+    CORRECTION_OBLIQUITY      =      0.0069 # Empirical correction for obliquity
 
     # Equation of center coefficients (Meeus 1998)
     EQUATION_CENTER_COEFF_1 = 1.9148 # sin(M)
@@ -105,7 +108,7 @@ module SunTimes
     #   sun.sunrise(Time.local(2025, 11, 2))
     # => 2025-11-02 06:37:00 UTC
     def sunrise(date : Time, location : Time::Location? = nil) : Time
-      jd_rise = calculate(date, rise: true)
+      jd_rise = calculate(date, rise: true, altitude: SUN_ALTITUDE_RISE_SET)
       raise CalculationError.new("No sunrise occurs on this date for this location (polar night/day)") if jd_rise.nan?
       from_julian(jd_rise, location)
     end
@@ -117,7 +120,7 @@ module SunTimes
     # Raises:
     #   CalculationError if there is no sunset (polar night or polar day).
     def sunset(date : Time, location : Time::Location? = nil) : Time
-      jd_set = calculate(date, rise: false)
+      jd_set = calculate(date, rise: false, altitude: SUN_ALTITUDE_RISE_SET)
       raise CalculationError.new("No sunset occurs on this date for this location (polar night/day)") if jd_set.nan?
       from_julian(jd_set, location)
     end
@@ -180,8 +183,8 @@ module SunTimes
     #   sun.daylight_length(Time.local(2025, 11, 2), paris)
     # => 9 hours, 50 minutes (approx)
     def daylight_length(date : Time, location : Time::Location? = nil) : Time::Span
-      jd_rise = calculate(date, rise: true)
-      jd_set = calculate(date, rise: false)
+      jd_rise = calculate(date, rise: true, altitude: SUN_ALTITUDE_RISE_SET)
+      jd_set = calculate(date, rise: false, altitude: SUN_ALTITUDE_RISE_SET)
 
       # If there's no sunrise or sunset (polar night/day), return zero
       return Time::Span.zero if jd_rise.nan? || jd_set.nan?
@@ -192,27 +195,113 @@ module SunTimes
       set - rise
     end
 
+    # Returns the time of civil dawn (beginning of civil twilight).
+    # Civil twilight occurs when the sun is 6° below the horizon.
+    # During this period, there is enough light for most outdoor activities.
+    #
+    # Arguments:
+    #   date      - Time (date portion is used; time of day ignored)
+    #   location  - Optional Time::Location for local conversion
+    #
+    # Returns:
+    #   Time in UTC or converted to the provided location.
+    #
+    # Raises:
+    #   CalculationError if there is no civil dawn (polar night or polar day).
+    def civil_dawn(date : Time, location : Time::Location? = nil) : Time
+      jd = calculate(date, rise: true, altitude: SUN_ALTITUDE_CIVIL)
+      raise CalculationError.new("No civil dawn occurs on this date for this location") if jd.nan?
+      from_julian(jd, location)
+    end
+
+    # Returns the time of civil dusk (end of civil twilight).
+    # See `#civil_dawn` for details about civil twilight.
+    def civil_dusk(date : Time, location : Time::Location? = nil) : Time
+      jd = calculate(date, rise: false, altitude: SUN_ALTITUDE_CIVIL)
+      raise CalculationError.new("No civil dusk occurs on this date for this location") if jd.nan?
+      from_julian(jd, location)
+    end
+
+    # Returns the time of nautical dawn (beginning of nautical twilight).
+    # Nautical twilight occurs when the sun is 12° below the horizon.
+    # During this period, the horizon is still visible for navigation.
+    #
+    # Arguments:
+    #   date      - Time (date portion is used; time of day ignored)
+    #   location  - Optional Time::Location for local conversion
+    #
+    # Returns:
+    #   Time in UTC or converted to the provided location.
+    #
+    # Raises:
+    #   CalculationError if there is no nautical dawn (polar night or polar day).
+    def nautical_dawn(date : Time, location : Time::Location? = nil) : Time
+      jd = calculate(date, rise: true, altitude: SUN_ALTITUDE_NAUTICAL)
+      raise CalculationError.new("No nautical dawn occurs on this date for this location") if jd.nan?
+      from_julian(jd, location)
+    end
+
+    # Returns the time of nautical dusk (end of nautical twilight).
+    # See `#nautical_dawn` for details about nautical twilight.
+    def nautical_dusk(date : Time, location : Time::Location? = nil) : Time
+      jd = calculate(date, rise: false, altitude: SUN_ALTITUDE_NAUTICAL)
+      raise CalculationError.new("No nautical dusk occurs on this date for this location") if jd.nan?
+      from_julian(jd, location)
+    end
+
+    # Returns the time of astronomical dawn (beginning of astronomical twilight).
+    # Astronomical twilight occurs when the sun is 18° below the horizon.
+    # During this period, the sky is dark enough for astronomical observations.
+    #
+    # Arguments:
+    #   date      - Time (date portion is used; time of day ignored)
+    #   location  - Optional Time::Location for local conversion
+    #
+    # Returns:
+    #   Time in UTC or converted to the provided location.
+    #
+    # Raises:
+    #   CalculationError if there is no astronomical dawn (polar night or polar day).
+    def astronomical_dawn(date : Time, location : Time::Location? = nil) : Time
+      jd = calculate(date, rise: true, altitude: SUN_ALTITUDE_ASTRONOMICAL)
+      raise CalculationError.new("No astronomical dawn occurs on this date for this location") if jd.nan?
+      from_julian(jd, location)
+    end
+
+    # Returns the time of astronomical dusk (end of astronomical twilight).
+    # See `#astronomical_dawn` for details about astronomical twilight.
+    def astronomical_dusk(date : Time, location : Time::Location? = nil) : Time
+      jd = calculate(date, rise: false, altitude: SUN_ALTITUDE_ASTRONOMICAL)
+      raise CalculationError.new("No astronomical dusk occurs on this date for this location") if jd.nan?
+      from_julian(jd, location)
+    end
+
     # ---------------------------------------------------------------------------
     # INTERNAL CALCULATIONS
     # ---------------------------------------------------------------------------
 
     # Core astronomical calculation.
     #
-    # Computes the Julian Day (JD) of sunrise or sunset for the given date.
+    # Computes the Julian Day (JD) of sunrise, sunset, or twilight for the given date.
     #
-    # The algorithm follows NOAA’s simplified solar position model:
+    # The algorithm follows NOAA's simplified solar position model:
     #   1. Compute Julian Day (JD)
     #   2. Compute mean anomaly (M)
     #   3. Apply Equation of Center (C) to correct for orbital eccentricity
     #   4. Compute ecliptic longitude (lambda_sun)
     #   5. Compute solar declination (declination)
-    #   6. Solve for hour angle (H0) at given solar altitude (-0.833°)
+    #   6. Solve for hour angle (H0) at given solar altitude
     #   7. Compute solar transit (J_transit)
     #   8. Add/subtract hour angle to get J_rise / J_set
     #
+    # Arguments:
+    #   date     - Time (date portion is used)
+    #   rise     - true for dawn/sunrise, false for dusk/sunset
+    #   altitude - Solar altitude angle in degrees (negative for below horizon)
+    #
     # Returns:
-    #   Julian Day (JD) value of sunrise or sunset
-    private def calculate(date : Time, rise : Bool) : Float64
+    #   Julian Day (JD) value of the event
+    private def calculate(date : Time, rise : Bool, altitude : Float64 = SUN_ALTITUDE_RISE_SET) : Float64
       jd = julian_day(date)
 
       # Approximate solar noon (local)
@@ -232,11 +321,11 @@ module SunTimes
       # Solar declination (delta)
       declination = Math.asin(Math.sin(lambda_sun * DEG2RAD) * Math.sin(OBLIQUITY * DEG2RAD)) * RAD2DEG
 
-      # Hour angle at sunrise/sunset
-      h0 = (Math.sin(SUN_ALTITUDE_RISE_SET * DEG2RAD) -
+      # Hour angle at sunrise/sunset/twilight (using specified altitude)
+      h0 = (Math.sin(altitude * DEG2RAD) -
             Math.sin(@latitude * DEG2RAD) * Math.sin(declination * DEG2RAD)) /
            (Math.cos(@latitude * DEG2RAD) * Math.cos(declination * DEG2RAD))
-      return Float64::NAN if h0.abs > 1 # Polar day/night: no sunrise or sunset
+      return Float64::NAN if h0.abs > 1 # Polar day/night: no sunrise/sunset/twilight
 
       h0 = Math.acos(h0) * RAD2DEG
 
