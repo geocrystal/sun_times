@@ -195,6 +195,41 @@ module SunTimes
       set - rise
     end
 
+    # Returns all solar events for the given date and location as a NamedTuple.
+    #
+    # Arguments:
+    #   date      - Time (only date portion is used)
+    #   location  - Optional Time::Location for local conversion
+    #
+    # Returns:
+    #   NamedTuple with all solar events:
+    #   - astronomical_dawn: Time?
+    #   - nautical_dawn: Time?
+    #   - civil_dawn: Time?
+    #   - sunrise: Time?
+    #   - solar_noon: Time (always available)
+    #   - sunset: Time?
+    #   - civil_dusk: Time?
+    #   - nautical_dusk: Time?
+    #   - astronomical_dusk: Time?
+    #
+    # Example:
+    #   sun.events(Time.local(2025, 11, 2), paris)
+    # => {astronomical_dawn: ..., nautical_dawn: ..., ...}
+    def events(date : Time, location : Time::Location? = nil)
+      {
+        astronomical_dawn: astronomical_dawn?(date, location),
+        nautical_dawn:     nautical_dawn?(date, location),
+        civil_dawn:        civil_dawn?(date, location),
+        sunrise:           sunrise?(date, location),
+        solar_noon:        solar_noon(date, location),
+        sunset:            sunset?(date, location),
+        civil_dusk:        civil_dusk?(date, location),
+        nautical_dusk:     nautical_dusk?(date, location),
+        astronomical_dusk: astronomical_dusk?(date, location),
+      }
+    end
+
     # Returns the time of civil dawn (beginning of civil twilight).
     # Civil twilight occurs when the sun is 6° below the horizon.
     # During this period, there is enough light for most outdoor activities.

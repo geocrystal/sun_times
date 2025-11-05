@@ -471,4 +471,36 @@ describe SunTimes::SunTime do
     sun_india.sunrise(date_india, india).should be_a(Time)
     sun_india.sunset(date_india, india).should be_a(Time)
   end
+
+  it "returns all solar events in a NamedTuple" do
+    sun = SunTimes::SunTime.new(51.5, -0.13) # London
+    london = Time::Location.load("Europe/London")
+    date = Time.local(2025, 11, 5, location: london)
+
+    events = sun.events(date, london)
+
+    events.should be_a(
+      NamedTuple(
+        astronomical_dawn: Time?,
+        nautical_dawn: Time?,
+        civil_dawn: Time?,
+        sunrise: Time?,
+        solar_noon: Time,
+        sunset: Time?,
+        civil_dusk: Time?,
+        nautical_dusk: Time?,
+        astronomical_dusk: Time?,
+      )
+    )
+
+    events[:astronomical_dawn].should eq sun.astronomical_dawn?(date, london)
+    events[:nautical_dawn].should eq sun.nautical_dawn?(date, london)
+    events[:civil_dawn].should eq sun.civil_dawn?(date, london)
+    events[:sunrise].should eq sun.sunrise?(date, london)
+    events[:solar_noon].should eq sun.solar_noon(date, london)
+    events[:sunset].should eq sun.sunset?(date, london)
+    events[:civil_dusk].should eq sun.civil_dusk?(date, london)
+    events[:nautical_dusk].should eq sun.nautical_dusk?(date, london)
+    events[:astronomical_dusk].should eq sun.astronomical_dusk?(date, london)
+  end
 end
