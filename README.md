@@ -89,6 +89,8 @@ The library supports three types of twilight periods:
 - **Nautical twilight** (sun 12° below horizon): Horizon is still visible for navigation
 - **Astronomical twilight** (sun 18° below horizon): Sky is dark enough for astronomical observations
 
+![image](https://github.com/geocrystal/sun_times/blob/main/samples/twilight_subcategories.png?raw=true)
+
 ## Contributing
 
 1. Fork it (<https://github.com/geocrystal/sun_times/fork>)
