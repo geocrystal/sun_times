@@ -29,15 +29,15 @@ def check_accuracy(
   puts
   puts "Calculated sunrise:    #{sunrise.to_s("%H:%M:%S")}"
   puts "Reference sunrise:     #{ref_sunrise.to_s("%H:%M:%S")}"
-  puts "Difference:           #{sunrise_diff.total_minutes.round(2)} minutes"
+  puts "Difference:            #{sunrise_diff.seconds} seconds"
   puts
   puts "Calculated sunset:     #{sunset.to_s("%H:%M:%S")}"
   puts "Reference sunset:      #{ref_sunset.to_s("%H:%M:%S")}"
-  puts "Difference:           #{sunset_diff.total_minutes.round(2)} minutes"
+  puts "Difference:            #{sunset_diff.seconds} seconds"
   puts
   puts "Calculated solar noon: #{noon.to_s("%H:%M:%S")}"
   puts "Reference solar noon:  #{ref_solar_noon.to_s("%H:%M:%S")}"
-  puts "Difference:           #{noon_diff.total_minutes.round(2)} minutes"
+  puts "Difference:            #{noon_diff.seconds} seconds"
   puts "=" * 80
   puts
 end
