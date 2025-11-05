@@ -19,8 +19,7 @@ Verification
 
 Results
 
-- Calculated times are within the margin of error and are effectively identical to NOAA's apparent times — differences are typically under 1 minute.
-- Solar noon calculations are especially close (typically within 1 minute).
+- Calculated times are within the margin of error and are effectively identical to NOAA's apparent times. Differences are typically under 1 minute.
 - Tested locations include New York, London, Tokyo and Sydney. Example: New York on 2025-11-05 matched NOAA apparent sunrise/sunset closely (06:31 / 16:47 local).
 
 ## Installation
