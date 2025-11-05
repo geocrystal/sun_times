@@ -2,7 +2,7 @@ require "../src/sun_times"
 
 # https://gml.noaa.gov/grad/solcalc/
 
-def fmt_time(t : Time?) : String
+def format_time(t : Time?) : String
   t ? t.to_s : "N/A"
 end
 
@@ -36,15 +36,15 @@ puts "Timezone: #{location}"
 puts "Now:      #{date}"
 puts
 puts "=== Twilight Periods ==="
-puts "Astronomical dawn:  #{fmt_time(astronomical_dawn_time)}"
-puts "Nautical dawn:      #{fmt_time(nautical_dawn_time)}"
-puts "Civil dawn:         #{fmt_time(civil_dawn_time)}"
-puts "Sunrise:            #{fmt_time(sunrise_time)}"
-puts "Solar noon:         #{fmt_time(solar_noon_time)}"
-puts "Sunset:             #{fmt_time(sunset_time)}"
-puts "Civil dusk:         #{fmt_time(civil_dusk_time)}"
-puts "Nautical dusk:      #{fmt_time(nautical_dusk_time)}"
-puts "Astronomical dusk:  #{fmt_time(astronomical_dusk_time)}"
+puts "Astronomical dawn:  #{format_time(astronomical_dawn_time)}"
+puts "Nautical dawn:      #{format_time(nautical_dawn_time)}"
+puts "Civil dawn:         #{format_time(civil_dawn_time)}"
+puts "Sunrise:            #{format_time(sunrise_time)}"
+puts "Solar noon:         #{format_time(solar_noon_time)}"
+puts "Sunset:             #{format_time(sunset_time)}"
+puts "Civil dusk:         #{format_time(civil_dusk_time)}"
+puts "Nautical dusk:      #{format_time(nautical_dusk_time)}"
+puts "Astronomical dusk:  #{format_time(astronomical_dusk_time)}"
 puts ""
 puts "=== Daylight ==="
 puts "Daylight:      #{format_time_span(daylight_length)}"
