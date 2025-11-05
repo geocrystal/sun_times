@@ -115,7 +115,8 @@ Output
   "sunset":"2025-11-05T16:54:29+02:00",
   "civil_dusk":"2025-11-05T17:28:46+02:00",
   "nautical_dusk":"2025-11-05T18:07:08+02:00",
-  "astronomical_dusk":"2025-11-05T18:44:39+02:00"}
+  "astronomical_dusk":"2025-11-05T18:44:39+02:00"
+}
 ```
 
 ### Twilight Periods
