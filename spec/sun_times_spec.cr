@@ -70,7 +70,7 @@ describe SunTimes::SunTime do
     paris = Time::Location.load("Europe/Paris")
     date = Time.local(2025, 11, 2, location: paris)
 
-    length = sun.day_length(date, paris)
+    length = sun.daylight_length(date, paris)
 
     expected_length = 9.hours + 50.minutes
     tolerance = 2.minutes
@@ -84,7 +84,7 @@ describe SunTimes::SunTime do
     svalbard = Time::Location.load("Europe/Oslo")
     date = Time.local(2025, 12, 15, location: svalbard)
 
-    length = sun.day_length(date, svalbard)
+    length = sun.daylight_length(date, svalbard)
 
     # Polar night → no daylight
     length.should eq Time::Span.zero
@@ -120,7 +120,7 @@ describe SunTimes::SunTime do
     sunrise = sun.sunrise(date, utc)
     sunset = sun.sunset(date, utc)
     noon = sun.solar_noon(date, utc)
-    length = sun.day_length(date, utc)
+    length = sun.daylight_length(date, utc)
 
     # At equator on equinox, day should be approximately 12 hours
     length.should be_close(12.hours, 10.minutes)
@@ -138,7 +138,7 @@ describe SunTimes::SunTime do
 
     sunrise = sun.sunrise(date, sydney)
     sunset = sun.sunset(date, sydney)
-    length = sun.day_length(date, sydney)
+    length = sun.daylight_length(date, sydney)
 
     # Summer solstice in Southern Hemisphere should have long days
     length.should be > 12.hours
@@ -152,7 +152,7 @@ describe SunTimes::SunTime do
 
     sunrise = sun.sunrise(date, paris)
     sunset = sun.sunset(date, paris)
-    length = sun.day_length(date, paris)
+    length = sun.daylight_length(date, paris)
 
     # Summer solstice should have longest day of year
     length.should be > 15.hours # Paris has long summer days
@@ -184,7 +184,7 @@ describe SunTimes::SunTime do
 
     sunrise = sun.sunrise(date, nyc)
     sunset = sun.sunset(date, nyc)
-    length = sun.day_length(date, nyc)
+    length = sun.daylight_length(date, nyc)
 
     # Verify times are reasonable and sunset is after sunrise
     sunset.should be > sunrise
@@ -213,8 +213,8 @@ describe SunTimes::SunTime do
     winter_date = Time.local(2025, 12, 21, location: paris) # Winter solstice
     summer_date = Time.local(2025, 6, 21, location: paris)  # Summer solstice
 
-    winter_length = sun.day_length(winter_date, paris)
-    summer_length = sun.day_length(summer_date, paris)
+    winter_length = sun.daylight_length(winter_date, paris)
+    summer_length = sun.daylight_length(summer_date, paris)
 
     # Summer should have longer days than winter
     summer_length.should be > winter_length
@@ -225,7 +225,7 @@ describe SunTimes::SunTime do
   end
 
   it "handles polar day (24-hour daylight)" do
-    # During polar day, there's no sunset/sunrise but day_length might not be exactly 24 hours
+    # During polar day, there's no sunset/sunrise but daylight_length might not be exactly 24 hours
     # At very high latitudes in summer
     sun = SunTimes::SunTime.new(80.0, 0.0) # High latitude
     utc = Time::Location.load("UTC")
@@ -234,7 +234,7 @@ describe SunTimes::SunTime do
     # This should either raise an error or return a very long day
     # Let's test what actually happens - it depends on exact latitude and date
     begin
-      length = sun.day_length(date, utc)
+      length = sun.daylight_length(date, utc)
       # If it doesn't raise, day should be very long (> 20 hours) or zero
       (length > 20.hours || length == Time::Span.zero).should be_true
     rescue SunTimes::CalculationError

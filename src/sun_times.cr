@@ -177,9 +177,9 @@ module SunTimes
     #   Returns zero if there is no sunrise/sunset (polar night or polar day).
     #
     # Example:
-    #   sun.day_length(Time.local(2025, 11, 2), paris)
+    #   sun.daylight_length(Time.local(2025, 11, 2), paris)
     # => 9 hours, 50 minutes (approx)
-    def day_length(date : Time, location : Time::Location? = nil) : Time::Span
+    def daylight_length(date : Time, location : Time::Location? = nil) : Time::Span
       jd_rise = calculate(date, rise: true)
       jd_set = calculate(date, rise: false)
 
