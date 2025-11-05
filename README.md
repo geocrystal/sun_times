@@ -100,6 +100,13 @@ Daylight:      9h 34m 9s
 You can also get all solar events as a NamedTuple using the `events` method, which is useful for serialization (e.g., JSON):
 
 ```crystal
+require "json"
+require "sun_times"
+
+sun = SunTimes::SunTime.new(49.8419, 24.0311)
+location = Time::Location.load("Europe/Kyiv")
+date = Time.local
+
 sun.events(date, location).to_json
 ```
 
