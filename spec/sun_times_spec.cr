@@ -314,6 +314,32 @@ describe SunTimes::SunTime do
       sun.sunset(date, oslo)
     end
 
+    # Astronomical twilight may also be absent during midnight sun
+    expect_raises(SunTimes::CalculationError, "No astronomical dawn occurs on this date for this location") do
+      sun.astronomical_dawn(date, oslo)
+    end
+
+    expect_raises(SunTimes::CalculationError, "No astronomical dusk occurs on this date for this location") do
+      sun.astronomical_dusk(date, oslo)
+    end
+
+    # Nautical and civil twilights are also typically absent during midnight sun
+    expect_raises(SunTimes::CalculationError, "No nautical dawn occurs on this date for this location") do
+      sun.nautical_dawn(date, oslo)
+    end
+
+    expect_raises(SunTimes::CalculationError, "No nautical dusk occurs on this date for this location") do
+      sun.nautical_dusk(date, oslo)
+    end
+
+    expect_raises(SunTimes::CalculationError, "No civil dawn occurs on this date for this location") do
+      sun.civil_dawn(date, oslo)
+    end
+
+    expect_raises(SunTimes::CalculationError, "No civil dusk occurs on this date for this location") do
+      sun.civil_dusk(date, oslo)
+    end
+
     # Day length should be 24 hours or 0 (implementation dependent)
     length = sun.daylight_length(date, oslo)
     (length == 24.hours || length == 0.seconds).should be_true
