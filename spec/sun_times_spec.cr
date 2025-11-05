@@ -299,19 +299,39 @@ describe SunTimes::SunTime do
     astronomical_dusk.should be > nautical_dusk
   end
 
-  it "verifies correct order of all twilight periods" do
-    sun = SunTimes::SunTime.new(48.87, 2.67) # Paris
-    paris = Time::Location.load("Europe/Paris")
-    date = Time.local(2025, 11, 2, location: paris)
+  it "handles summer solstice correctly in Arctic Circle" do
+    # Tromsø, Norway (69.6492° N) - experiences midnight sun
+    sun = SunTimes::SunTime.new(69.6492, 18.9553)
+    oslo = Time::Location.load("Europe/Oslo")
+    date = Time.local(2025, 6, 21, location: oslo) # Summer solstice
 
-    astronomical_dawn = sun.astronomical_dawn(date, paris)
-    nautical_dawn = sun.nautical_dawn(date, paris)
-    civil_dawn = sun.civil_dawn(date, paris)
-    sunrise = sun.sunrise(date, paris)
-    sunset = sun.sunset(date, paris)
-    civil_dusk = sun.civil_dusk(date, paris)
-    nautical_dusk = sun.nautical_dusk(date, paris)
-    astronomical_dusk = sun.astronomical_dusk(date, paris)
+    # Should have no true sunrise/sunset (midnight sun)
+    expect_raises(SunTimes::CalculationError, "No sunrise occurs on this date for this location") do
+      sun.sunrise(date, oslo)
+    end
+
+    expect_raises(SunTimes::CalculationError, "No sunset occurs on this date for this location") do
+      sun.sunset(date, oslo)
+    end
+
+    # Day length should be 24 hours or 0 (implementation dependent)
+    length = sun.daylight_length(date, oslo)
+    (length == 24.hours || length == 0.seconds).should be_true
+  end
+
+  it "verifies correct order of all twilight periods" do
+    sun = SunTimes::SunTime.new(51.5, -0.13) # London
+    london = Time::Location.load("Europe/London")
+    date = Time.local(2025, 11, 5, location: london)
+
+    astronomical_dawn = sun.astronomical_dawn(date, london)
+    nautical_dawn = sun.nautical_dawn(date, london)
+    civil_dawn = sun.civil_dawn(date, london)
+    sunrise = sun.sunrise(date, london)
+    sunset = sun.sunset(date, london)
+    civil_dusk = sun.civil_dusk(date, london)
+    nautical_dusk = sun.nautical_dusk(date, london)
+    astronomical_dusk = sun.astronomical_dusk(date, london)
 
     # Verify correct chronological order
     astronomical_dawn.should be < nautical_dawn
@@ -321,5 +341,52 @@ describe SunTimes::SunTime do
     sunset.should be < civil_dusk
     civil_dusk.should be < nautical_dusk
     nautical_dusk.should be < astronomical_dusk
+  end
+
+  it "handles winter solstice correctly near Antarctic Circle" do
+    # McMurdo Station, Antarctica (77.8419° S)
+    sun = SunTimes::SunTime.new(-77.8419, 166.6863)
+    date = Time.local(2025, 6, 21) # Winter solstice (Southern Hemisphere)
+
+    # Should have no sunrise/sunset (polar night)
+    expect_raises(SunTimes::CalculationError, "No sunrise occurs on this date for this location") do
+      sun.sunrise(date)
+    end
+
+    expect_raises(SunTimes::CalculationError, "No sunset occurs on this date for this location") do
+      sun.sunset(date)
+    end
+  end
+
+  it "handles locations near equator correctly" do
+    # Singapore (1.3521° N)
+    sun = SunTimes::SunTime.new(1.3521, 103.8198)
+    singapore = Time::Location.load("Asia/Singapore")
+    date = Time.local(2025, 11, 5, location: singapore)
+
+    sunrise = sun.sunrise(date, singapore)
+    sunset = sun.sunset(date, singapore)
+    length = sun.daylight_length(date, singapore)
+
+    # Near equator should have roughly 12-hour days year-round
+    (length - 12.hours).abs.should be < 30.minutes
+  end
+
+  it "handles date line and fractional time zones correctly" do
+    # Test near international date line (Samoa)
+    samoa = Time::Location.load("Pacific/Apia")
+    sun_samoa = SunTimes::SunTime.new(-13.7590, -172.1046)
+    date_samoa = Time.local(2025, 11, 5, location: samoa)
+
+    # Test fractional timezone (India)
+    india = Time::Location.load("Asia/Kolkata")
+    sun_india = SunTimes::SunTime.new(28.6139, 77.2090)
+    date_india = Time.local(2025, 11, 5, location: india)
+
+    # Both locations should get valid sunrise/sunset times
+    sun_samoa.sunrise(date_samoa, samoa).should be_a(Time)
+    sun_samoa.sunset(date_samoa, samoa).should be_a(Time)
+    sun_india.sunrise(date_india, india).should be_a(Time)
+    sun_india.sunset(date_india, india).should be_a(Time)
   end
 end
