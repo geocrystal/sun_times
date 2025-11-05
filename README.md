@@ -4,7 +4,7 @@
 [![GitHub release](https://img.shields.io/github/release/geocrystal/sun_times.svg)](https://github.com/geocrystal/sun_times/releases)
 [![License](https://img.shields.io/github/license/geocrystal/sun_times.svg)](https://github.com/geocrystal/geojson/blob/main/LICENSE)
 
-A [Crystal](https://crystal-lang.org) library for computing 🌅 **sunrise** and 🌇 **sunset** times based on
+A simple [Crystal](https://crystal-lang.org) library for calculating 🌅 **sunrise** and 🌇 **sunset** given latitude, longitude, and date based on
 the [NOAA Solar Calculator](https://gml.noaa.gov/grad/solcalc/) and formulas from
 Jean Meeus’ _Astronomical Algorithms (2nd Edition, 1998)_.
 

@@ -1,6 +1,8 @@
 name: sun_times
 version: 0.1.0
 
+description: Simple Crystal library for calculating sunrise and sunset given latitude, longitude, and date
+
 authors:
   - Anton Maminov <anton.maminov@gmail.com>
 
