@@ -95,6 +95,8 @@ Astronomical dusk:  2025-11-05 18:44:39 +02:00
 Daylight:      9h 34m 9s
 ```
 
+![readme](https://github.com/geocrystal/sun_times/blob/main/samples/readme.png?raw=true)
+
 ### Twilight Periods
 
 The library supports three types of twilight periods:
