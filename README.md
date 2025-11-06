@@ -8,7 +8,7 @@ A simple [Crystal](https://crystal-lang.org) library for calculating 🌅 **sunr
 the [NOAA Solar Calculator](https://gml.noaa.gov/grad/solcalc/) and formulas from
 Jean Meeus' _Astronomical Algorithms (2nd Edition, 1998)_.
 
-## Accuracy
+## 📊 Accuracy
 
 The library's astronomical constants and algorithms follow authoritative sources (NOAA, JPL, Meeus) and were verified manually against the NOAA Solar Calculator (<https://gml.noaa.gov/grad/solcalc/>).
 
@@ -22,7 +22,7 @@ Results
 - Calculated times are within the margin of error and are effectively identical to NOAA's apparent times. Differences are typically under 1 minute.
 - Tested locations include New York, London, Tokyo and Sydney. Example: New York on 2025-11-05 matched NOAA apparent sunrise/sunset closely (06:31 / 16:47 local).
 
-## Installation
+## 📦 Installation
 
 1. Add the dependency to your `shard.yml`:
 
@@ -34,7 +34,7 @@ Results
 
 2. Run `shards install`
 
-## Usage
+## 💻 Usage
 
 ```crystal
 require "sun_times"
@@ -97,7 +97,7 @@ Daylight:      9h 34m 9s
 
 ![readme](https://github.com/geocrystal/sun_times/blob/main/samples/readme.png?raw=true)
 
-You can also get all solar events as a NamedTuple using the `events` method, which is useful for serialization (e.g., JSON):
+You can also get all solar events as a NamedTuple using the `events` method, which is useful for serialization (e.g., JSON): 📋
 
 ```crystal
 require "json"
@@ -126,13 +126,13 @@ Output
 }
 ```
 
-### Twilight Periods
+### 🌆 Twilight Periods
 
 The library supports three types of twilight periods:
 
-- **Civil twilight** (sun 6° below horizon): Enough light for most outdoor activities
-- **Nautical twilight** (sun 12° below horizon): Horizon is still visible for navigation
-- **Astronomical twilight** (sun 18° below horizon): Sky is dark enough for astronomical observations
+- **Civil twilight** 🌅 (sun 6° below horizon): Enough light for most outdoor activities
+- **Nautical twilight** ⚓ (sun 12° below horizon): Horizon is still visible for navigation
+- **Astronomical twilight** 🔭 (sun 18° below horizon): Sky is dark enough for astronomical observations
 
 ![image](https://github.com/geocrystal/sun_times/blob/main/samples/twilight_subcategories.png?raw=true)
 
@@ -148,7 +148,7 @@ You can run the benchmark with:
 crystal run --release samples/benchmark.cr
 ```
 
-## Contributing
+## 🤝 Contributing
 
 1. Fork it (<https://github.com/geocrystal/sun_times/fork>)
 2. Create your feature branch (`git checkout -b my-new-feature`)
@@ -156,10 +156,10 @@ crystal run --release samples/benchmark.cr
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create a new Pull Request
 
-## Contributors
+## 👥 Contributors
 
 - [Anton Maminov](https://github.com/mamantoha) - creator and maintainer
 
-## License
+## 📄 License
 
 This library is distributed under the MIT license. Please see the LICENSE file.
