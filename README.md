@@ -136,6 +136,18 @@ The library supports three types of twilight periods:
 
 ![image](https://github.com/geocrystal/sun_times/blob/main/samples/twilight_subcategories.png?raw=true)
 
+## 🚀 Performance
+
+The library is fast as the speed of light! ⚡ Individual calculations are sub-microsecond, and the `events` method that computes all solar events is still under 4 microseconds per call.
+
+Benchmark results were obtained on Intel(R) Core(TM) i7-8550U (8) @ 4.00 GHz.
+
+You can run the benchmark with:
+
+```bash
+crystal run --release samples/benchmark.cr
+```
+
 ## Contributing
 
 1. Fork it (<https://github.com/geocrystal/sun_times/fork>)
