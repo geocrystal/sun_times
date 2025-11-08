@@ -97,8 +97,8 @@ module SunTimes
     #
     # Arguments:
     #
-    # `date` - Time (date portion is used; time of day ignored)
-    # `location` - Optional Time::Location for local conversion
+    # - `date` - Time (date portion is used; time of day ignored)
+    # - `location` - Optional Time::Location for local conversion
     #
     # Returns:
     #
@@ -147,8 +147,8 @@ module SunTimes
     #
     # Arguments:
     #
-    # `date` - Time (only the date portion is used)
-    # `location` - Optional Time::Location for local conversion
+    # - `date` - Time (only the date portion is used)
+    # - `location` - Optional Time::Location for local conversion
     #
     # Returns:
     #
@@ -193,8 +193,8 @@ module SunTimes
     #
     # Arguments:
     #
-    # `date` - Time (only date portion is used)
-    # `location` - Optional Time::Location for local conversion
+    # - `date` - Time (only date portion is used)
+    # - `location` - Optional Time::Location for local conversion
     #
     # Returns:
     #
@@ -224,8 +224,9 @@ module SunTimes
     # Returns all solar events for the given date and location as a NamedTuple.
     #
     # Arguments:
-    # `date` - Time (only date portion is used)
-    # `location` - Optional Time::Location for local conversion
+    #
+    # - `date` - Time (only date portion is used)
+    # - `location` - Optional Time::Location for local conversion
     #
     # Returns:
     #
@@ -267,8 +268,8 @@ module SunTimes
     #
     # Arguments:
     #
-    # `date` - Time (date portion is used; time of day ignored)
-    # `location` - Optional Time::Location for local conversion
+    # - `date` - Time (date portion is used; time of day ignored)
+    # - `location` - Optional Time::Location for local conversion
     #
     # Returns:
     #
@@ -303,13 +304,15 @@ module SunTimes
     #
     # Arguments:
     #
-    # `date` - Time (date portion is used; time of day ignored)
-    # `location` - Optional Time::Location for local conversion
+    # - `date` - Time (date portion is used; time of day ignored)
+    # - `location` - Optional Time::Location for local conversion
     #
     # Returns:
+    #
     # `Time` in UTC or converted to the provided location.
     #
     # Raises:
+    #
     # `CalculationError` if there is no nautical dawn (polar night or polar day).
     #
     # Example:
@@ -336,8 +339,8 @@ module SunTimes
     #
     # Arguments:
     #
-    # `date` - Time (date portion is used; time of day ignored)
-    # `location` - Optional Time::Location for local conversion
+    # - `date` - Time (date portion is used; time of day ignored)
+    # - `location` - Optional Time::Location for local conversion
     #
     # Returns:
     # `Time` in UTC or converted to the provided location.
@@ -433,9 +436,9 @@ module SunTimes
     #
     # Arguments:
     #
-    # `date` - Time (date portion is used)
-    # `rise` - true for dawn/sunrise, false for dusk/sunset
-    # `altitude` - Solar altitude angle in degrees (negative for below horizon)
+    # - `date` - Time (date portion is used)
+    # - `rise` - true for dawn/sunrise, false for dusk/sunset
+    # - `altitude` - Solar altitude angle in degrees (negative for below horizon)
     #
     # Returns:
     #
@@ -508,15 +511,14 @@ module SunTimes
     #
     # Arguments:
     #
-    # `jd` - Julian Day (floating-point day count)
-    # `location` - Optional Time::Location to return local time
+    # - `jd` - Julian Day (floating-point day count)
+    # - `location` - Optional Time::Location to return local time
     #
     # Returns:
     #
     # `Time` instance in UTC or converted to the provided location.
     #
-    # Raises:
-    # `InvalidInputError` if jd is NaN or infinite.
+    # Raises `InvalidInputError` if `jd` is NaN or infinite.
     private def from_julian(jd : Float64, location : Time::Location?) : Time
       raise InvalidInputError.new("Invalid Julian Day: NaN") if jd.nan?
       raise InvalidInputError.new("Invalid Julian Day: infinite") if jd.infinite?
