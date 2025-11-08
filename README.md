@@ -2,6 +2,7 @@
 
 [![Crystal CI](https://github.com/geocrystal/sun_times/actions/workflows/crystal.yml/badge.svg)](https://github.com/geocrystal/sun_times/actions/workflows/crystal.yml)
 [![GitHub release](https://img.shields.io/github/release/geocrystal/sun_times.svg)](https://github.com/geocrystal/sun_times/releases)
+[![Docs](https://img.shields.io/badge/docs-available-brightgreen.svg)](https://geocrystal.github.io/sun_times/)
 [![License](https://img.shields.io/github/license/geocrystal/sun_times.svg)](https://github.com/geocrystal/geojson/blob/main/LICENSE)
 
 A simple [Crystal](https://crystal-lang.org) library for calculating 🌅 **sunrise** and 🌇 **sunset** given latitude, longitude, and date based on
