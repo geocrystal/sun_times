@@ -71,10 +71,11 @@ module SunTimes
 
     # Initializes a SunTime calculator for the given latitude and longitude.
     #
-    # Latitude:  degrees north (negative for south)
-    # Longitude: degrees east (negative for west)
+    # `latitude`  - Degrees north (negative for south)
+    # `longitude` - Degrees east (negative for west)
     #
     # Example:
+    #
     # ```
     # SunTimes::SunTime.new(48.87, 2.67)   # Paris
     # SunTimes::SunTime.new({48.87, 2.67}) # Paris
@@ -95,18 +96,24 @@ module SunTimes
     # Returns the UTC time of sunrise for the given date.
     #
     # Arguments:
-    #   date      - Time (date portion is used; time of day ignored)
-    #   location  - Optional Time::Location for local conversion
+    #
+    # `date` - Time (date portion is used; time of day ignored)
+    # `location` - Optional Time::Location for local conversion
     #
     # Returns:
-    #   Time in UTC or converted to the provided location.
+    #
+    # `Time` in UTC or converted to the provided location.
     #
     # Raises:
-    #   CalculationError if there is no sunrise (polar night or polar day).
+    #
+    # `CalculationError` if there is no sunrise (polar night or polar day).
     #
     # Example:
-    #   sun.sunrise(Time.local(2025, 11, 2))
+    #
+    # ```
+    # sun.sunrise(Time.local(2025, 11, 2))
     # => 2025-11-02 06:37:00 UTC
+    # ```
     def sunrise(date : Time, location : Time::Location? = nil) : Time
       t = sunrise?(date, location)
       raise CalculationError.new("No sunrise occurs on this date for this location (polar night/day)") if t.nil?
@@ -118,7 +125,15 @@ module SunTimes
     # Arguments and behavior are identical to `#sunrise`.
     #
     # Raises:
-    #   CalculationError if there is no sunset (polar night or polar day).
+    #
+    # `CalculationError` if there is no sunset (polar night or polar day).
+    #
+    # Example:
+    #
+    # ```
+    # sun.sunset(Time.local(2025, 11, 2))
+    # => 2025-11-02 16:47:00 UTC
+    # ```
     def sunset(date : Time, location : Time::Location? = nil) : Time
       t = sunset?(date, location)
       raise CalculationError.new("No sunset occurs on this date for this location (polar night/day)") if t.nil?
@@ -131,15 +146,20 @@ module SunTimes
     # This method uses the same underlying model as sunrise/sunset calculations.
     #
     # Arguments:
-    #   date      - Time (only the date portion is used)
-    #   location  - Optional Time::Location for local conversion
+    #
+    # `date` - Time (only the date portion is used)
+    # `location` - Optional Time::Location for local conversion
     #
     # Returns:
-    #   Time of local solar noon (UTC by default)
+    #
+    # `Time` of local solar noon (UTC by default)
     #
     # Example:
-    #   sun.solar_noon(Time.local(2025, 11, 2), paris)
+    #
+    # ```
+    # sun.solar_noon(Time.local(2025, 11, 2), paris)
     # => 2025-11-02 12:32:50 +01:00
+    # ```
     def solar_noon(date : Time, location : Time::Location? = nil) : Time
       jd = julian_day(date)
 
@@ -172,16 +192,22 @@ module SunTimes
     # for the given date and location.
     #
     # Arguments:
-    #   date      - Time (only date portion is used)
-    #   location  - Optional Time::Location for local conversion
+    #
+    # `date` - Time (only date portion is used)
+    # `location` - Optional Time::Location for local conversion
     #
     # Returns:
-    #   Time::Span representing total daylight duration.
-    #   Returns zero if there is no sunrise/sunset (polar night or polar day).
+    #
+    # `Time::Span` representing total daylight duration.
+    #
+    # Returns `Time::Span.zero` if there is no sunrise/sunset (polar night or polar day).
     #
     # Example:
-    #   sun.daylight_length(Time.local(2025, 11, 2), paris)
+    #
+    # ```
+    # sun.daylight_length(Time.local(2025, 11, 2), paris)
     # => 9 hours, 50 minutes (approx)
+    # ```
     def daylight_length(date : Time, location : Time::Location? = nil) : Time::Span
       jd_rise = calculate(date, rise: true, altitude: SUN_ALTITUDE_RISE_SET)
       jd_set = calculate(date, rise: false, altitude: SUN_ALTITUDE_RISE_SET)
@@ -198,24 +224,29 @@ module SunTimes
     # Returns all solar events for the given date and location as a NamedTuple.
     #
     # Arguments:
-    #   date      - Time (only date portion is used)
-    #   location  - Optional Time::Location for local conversion
+    # `date` - Time (only date portion is used)
+    # `location` - Optional Time::Location for local conversion
     #
     # Returns:
-    #   NamedTuple with all solar events:
-    #   - astronomical_dawn: Time?
-    #   - nautical_dawn: Time?
-    #   - civil_dawn: Time?
-    #   - sunrise: Time?
-    #   - solar_noon: Time (always available)
-    #   - sunset: Time?
-    #   - civil_dusk: Time?
-    #   - nautical_dusk: Time?
-    #   - astronomical_dusk: Time?
+    #
+    # `NamedTuple` with all solar events:
+    #
+    # - `astronomical_dawn` - Time?
+    # - `nautical_dawn` - Time?
+    # - `civil_dawn` - Time?
+    # - `sunrise` - Time?
+    # - `solar_noon` - Time (always available)
+    # - `sunset` - Time?
+    # - `civil_dusk` - Time?
+    # - `nautical_dusk` - Time?
+    # - `astronomical_dusk` - Time?
     #
     # Example:
-    #   sun.events(Time.local(2025, 11, 2), paris)
+    #
+    # ```
+    # sun.events(Time.local(2025, 11, 2), paris)
     # => {astronomical_dawn: ..., nautical_dawn: ..., ...}
+    # ```
     def events(date : Time, location : Time::Location? = nil)
       {
         astronomical_dawn: astronomical_dawn?(date, location),
@@ -235,21 +266,32 @@ module SunTimes
     # During this period, there is enough light for most outdoor activities.
     #
     # Arguments:
-    #   date      - Time (date portion is used; time of day ignored)
-    #   location  - Optional Time::Location for local conversion
+    #
+    # `date` - Time (date portion is used; time of day ignored)
+    # `location` - Optional Time::Location for local conversion
     #
     # Returns:
-    #   Time in UTC or converted to the provided location.
+    #
+    # `Time` in UTC or converted to the provided location.
     #
     # Raises:
-    #   CalculationError if there is no civil dawn (polar night or polar day).
+    #
+    # `CalculationError` if there is no civil dawn (polar night or polar day).
+    #
+    # Example:
+    #
+    # ```
+    # sun.civil_dawn(Time.local(2025, 11, 2), paris)
+    # => 2025-11-02 06:37:00 UTC
+    # ```
     def civil_dawn(date : Time, location : Time::Location? = nil) : Time
       civil_dawn?(date, location) ||
         raise CalculationError.new("No civil dawn occurs on this date for this location")
     end
 
     # Returns the time of civil dusk (end of civil twilight).
-    # See `#civil_dawn` for details about civil twilight.
+    #
+    # See `civil_dawn` for details about civil twilight.
     def civil_dusk(date : Time, location : Time::Location? = nil) : Time
       civil_dusk?(date, location) ||
         raise CalculationError.new("No civil dusk occurs on this date for this location")
@@ -260,21 +302,29 @@ module SunTimes
     # During this period, the horizon is still visible for navigation.
     #
     # Arguments:
-    #   date      - Time (date portion is used; time of day ignored)
-    #   location  - Optional Time::Location for local conversion
+    #
+    # `date` - Time (date portion is used; time of day ignored)
+    # `location` - Optional Time::Location for local conversion
     #
     # Returns:
-    #   Time in UTC or converted to the provided location.
+    # `Time` in UTC or converted to the provided location.
     #
     # Raises:
-    #   CalculationError if there is no nautical dawn (polar night or polar day).
+    # `CalculationError` if there is no nautical dawn (polar night or polar day).
+    #
+    # Example:
+    #
+    # ```
+    # sun.nautical_dawn(Time.local(2025, 11, 2), paris)
+    # => 2025-11-02 06:37:00 UTC
+    # ```
     def nautical_dawn(date : Time, location : Time::Location? = nil) : Time
       nautical_dawn?(date, location) ||
         raise CalculationError.new("No nautical dawn occurs on this date for this location")
     end
 
     # Returns the time of nautical dusk (end of nautical twilight).
-    # See `#nautical_dawn` for details about nautical twilight.
+    # See `nautical_dawn` for details about nautical twilight.
     def nautical_dusk(date : Time, location : Time::Location? = nil) : Time
       nautical_dusk?(date, location) ||
         raise CalculationError.new("No nautical dusk occurs on this date for this location")
@@ -285,21 +335,30 @@ module SunTimes
     # During this period, the sky is dark enough for astronomical observations.
     #
     # Arguments:
-    #   date      - Time (date portion is used; time of day ignored)
-    #   location  - Optional Time::Location for local conversion
+    #
+    # `date` - Time (date portion is used; time of day ignored)
+    # `location` - Optional Time::Location for local conversion
     #
     # Returns:
-    #   Time in UTC or converted to the provided location.
+    # `Time` in UTC or converted to the provided location.
     #
     # Raises:
-    #   CalculationError if there is no astronomical dawn (polar night or polar day).
+    # `CalculationError` if there is no astronomical dawn (polar night or polar day).
+    #
+    # Example:
+    #
+    # ```
+    # sun.astronomical_dawn(Time.local(2025, 11, 2), paris)
+    # => 2025-11-02 06:37:00 UTC
+    # ```
     def astronomical_dawn(date : Time, location : Time::Location? = nil) : Time
       astronomical_dawn?(date, location) ||
         raise CalculationError.new("No astronomical dawn occurs on this date for this location")
     end
 
     # Returns the time of astronomical dusk (end of astronomical twilight).
-    # See `#astronomical_dawn` for details about astronomical twilight.
+    #
+    # See `astronomical_dawn` for details about astronomical twilight.
     def astronomical_dusk(date : Time, location : Time::Location? = nil) : Time
       astronomical_dusk?(date, location) ||
         raise CalculationError.new("No astronomical dusk occurs on this date for this location")
@@ -373,12 +432,16 @@ module SunTimes
     #   8. Add/subtract hour angle to get J_rise / J_set
     #
     # Arguments:
-    #   date     - Time (date portion is used)
-    #   rise     - true for dawn/sunrise, false for dusk/sunset
-    #   altitude - Solar altitude angle in degrees (negative for below horizon)
+    #
+    # `date` - Time (date portion is used)
+    # `rise` - true for dawn/sunrise, false for dusk/sunset
+    # `altitude` - Solar altitude angle in degrees (negative for below horizon)
     #
     # Returns:
-    #   Julian Day (JD) value of the event
+    #
+    # `Float64` Julian Day (JD) value of the event
+    #
+    # Returns: Julian Day (JD) value of the event
     private def calculate(date : Time, rise : Bool, altitude : Float64 = SUN_ALTITUDE_RISE_SET) : Float64
       jd = julian_day(date)
 
@@ -444,11 +507,16 @@ module SunTimes
     # Converts a Julian Day (JD) to a Crystal Time instance.
     #
     # Arguments:
-    #   jd       - Julian Day (floating-point day count)
-    #   location - Optional Time::Location to return local time
+    #
+    # `jd` - Julian Day (floating-point day count)
+    # `location` - Optional Time::Location to return local time
+    #
+    # Returns:
+    #
+    # `Time` instance in UTC or converted to the provided location.
     #
     # Raises:
-    #   InvalidInputError if jd is NaN or infinite.
+    # `InvalidInputError` if jd is NaN or infinite.
     private def from_julian(jd : Float64, location : Time::Location?) : Time
       raise InvalidInputError.new("Invalid Julian Day: NaN") if jd.nan?
       raise InvalidInputError.new("Invalid Julian Day: infinite") if jd.infinite?
