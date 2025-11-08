@@ -2,7 +2,7 @@ name: website
 
 on:
   push:
-    branches: [master]
+    branches: [main]
 
 jobs:
   publish:
@@ -10,8 +10,6 @@ jobs:
     steps:
       - name: Install Crystal
         uses: crystal-lang/install-crystal@v1
-        with:
-          crystal: nightly
       - name: Check out repository code
         uses: actions/checkout@v5
       - name: Install dependencies
