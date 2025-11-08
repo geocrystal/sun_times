@@ -55,4 +55,5 @@ if sunset_time && date < sunset_time
   puts "Daylight left: #{format_time_span(daylight_left)}"
 end
 
+puts
 puts sun.events(date, location).to_json
