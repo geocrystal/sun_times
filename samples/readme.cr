@@ -50,7 +50,7 @@ puts ""
 puts "=== Daylight ==="
 puts "Daylight:      #{format_time_span(daylight_length)}"
 
-if sunset_time && date < sunset_time
+if sunset_time && date.in?(sunset_time..sunset_time)
   daylight_left = sunset_time - date
   puts "Daylight left: #{format_time_span(daylight_left)}"
 end
