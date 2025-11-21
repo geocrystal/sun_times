@@ -33,7 +33,7 @@ module SunTimes
     # Astronomical constants (Meeus / NOAA)
     # ---------------------------------------------------------------------------
 
-    JULIAN_EPOCH_J2000        = 2_451_545.0 # Julian Day of J2000.0 epoch (2000-01-01 12:00 TT)
+    JULIAN_EPOCH_J2000        =   2451545.0 # Julian Day of J2000.0 epoch (2000-01-01 12:00 TT)
     MEAN_ANOMALY_AT_EPOCH     =    357.5291 # Earth's mean anomaly at J2000.0 (deg)
     DAILY_MOTION              =  0.98564736 # Average orbital motion (deg/day)
     EARTH_PERIHELION_LONG     =    102.9373 # Longitude of Earth's perihelion (deg)
@@ -42,8 +42,9 @@ module SunTimes
     SUN_ALTITUDE_CIVIL        =        -6.0 # Civil twilight (sun 6° below horizon)
     SUN_ALTITUDE_NAUTICAL     =       -12.0 # Nautical twilight (sun 12° below horizon)
     SUN_ALTITUDE_ASTRONOMICAL =       -18.0 # Astronomical twilight (sun 18° below horizon)
-    CORRECTION_ECCENTRICITY   =     0.00534 # Empirical correction for eccentricity
-    CORRECTION_OBLIQUITY      =     0.00692 # Empirical correction for obliquity
+
+    CORRECTION_ECCENTRICITY = 0.00534 # Empirical correction for eccentricity
+    CORRECTION_OBLIQUITY    = 0.00692 # Empirical correction for obliquity
 
     # Equation of center coefficients (Meeus 1998)
     EQUATION_CENTER_COEFF_1 = 1.9148 # sin(M)
