@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Crystal Docs 1.17.1">
+<meta name="crystal_docs.project_version" content="main">
+<meta name="crystal_docs.project_name" content="sun_times">
+
+
+
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="js/doc.js"></script>
+
+  <meta name="repository-name" content="sun_times">
+  <title>sun_times main</title>
+  <script type="text/javascript">
+  CrystalDocs.base_path = "";
+  </script>
+</head>
+<body>
+
+<svg class="hidden">
+  <symbol id="octicon-link" viewBox="0 0 16 16">
+    <path fill="currentColor" fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path>
+  </symbol>
+</svg>
+<input type="checkbox" id="sidebar-btn">
+<label for="sidebar-btn" id="sidebar-btn-label">
+  <svg class="open" xmlns="http://www.w3.org/2000/svg" height="2em" width="2em" viewBox="0 0 512 512"><title>Open Sidebar</title><path fill="currentColor" d="M80 96v64h352V96H80zm0 112v64h352v-64H80zm0 112v64h352v-64H80z"></path></svg>
+  <svg class="close" xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 512 512"><title>Close Sidebar</title><path fill="currentColor" d="m118.6 73.4-45.2 45.2L210.7 256 73.4 393.4l45.2 45.2L256 301.3l137.4 137.3 45.2-45.2L301.3 256l137.3-137.4-45.2-45.2L256 210.7Z"></path></svg>
+</label>
+<div class="sidebar">
+  <div class="sidebar-header">
+    <div class="search-box">
+      <input type="search" class="search-input" placeholder="Search..." spellcheck="false" aria-label="Search">
+    </div>
+
+    <div class="project-summary">
+      <h1 class="project-name">
+        <a href="index.html">
+          sun_times
+        </a>
+      </h1>
+
+      <span class="project-version">
+        main
+      </span>
+    </div>
+  </div>
+
+  <div class="search-results hidden">
+    <ul class="search-list"></ul>
+  </div>
+
+  <div class="types-list">
+    <ul>
+  
+  <li class="parent " data-id="sun_times/SunTimes" data-name="suntimes">
+      <a href="SunTimes.html">SunTimes</a>
+      
+        <ul>
+  
+  <li class=" " data-id="sun_times/SunTimes/CalculationError" data-name="suntimes::calculationerror">
+      <a href="SunTimes/CalculationError.html">CalculationError</a>
+      
+    </li>
+  
+  <li class=" " data-id="sun_times/SunTimes/InvalidInputError" data-name="suntimes::invalidinputerror">
+      <a href="SunTimes/InvalidInputError.html">InvalidInputError</a>
+      
+    </li>
+  
+  <li class=" " data-id="sun_times/SunTimes/SunTime" data-name="suntimes::suntime">
+      <a href="SunTimes/SunTime.html">SunTime</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+  </div>
+</div>
+
+
+<div class="main-content">
+<h1><a id="️-sun-times" class="anchor" href="#️-sun-times">  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>☀️ sun_times</h1>
+<p><a href="https://github.com/geocrystal/sun_times/actions/workflows/crystal.yml"><img src="https://github.com/geocrystal/sun_times/actions/workflows/crystal.yml/badge.svg" alt="Crystal CI" /></a>
+<a href="https://github.com/geocrystal/sun_times/releases"><img src="https://img.shields.io/github/release/geocrystal/sun_times.svg" alt="GitHub release" /></a>
+<a href="https://geocrystal.github.io/sun_times/"><img src="https://img.shields.io/badge/docs-available-brightgreen.svg" alt="Docs" /></a>
+<a href="https://github.com/geocrystal/sun_times/blob/main/LICENSE"><img src="https://img.shields.io/github/license/geocrystal/sun_times.svg" alt="License" /></a></p>
+<p>A simple <a href="https://crystal-lang.org">Crystal</a> library for calculating 🌅 <strong>sunrise</strong> and 🌇 <strong>sunset</strong> given latitude, longitude, and date based on
+the <a href="https://gml.noaa.gov/grad/solcalc/">NOAA Solar Calculator</a> and formulas from
+Jean Meeus' <em>Astronomical Algorithms (2nd Edition, 1998)</em>.</p>
+<h2><a id="accuracy" class="anchor" href="#accuracy">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>📊 Accuracy</h2>
+<p>The library's astronomical constants and algorithms follow authoritative sources (NOAA, JPL, Meeus) and were verified manually against the NOAA Solar Calculator (<a href="https://gml.noaa.gov/grad/solcalc/">https://gml.noaa.gov/grad/solcalc/</a>).</p>
+<p>Verification</p>
+<ul>
+<li>A validation script (<code>samples/accuracy_check.cr</code>) compares calculated sunrise, sunset and solar noon against NOAA's apparent times for several locations.</li>
+<li>The comparison was performed manually by running the script and checking the NOAA site for reference values.</li>
+</ul>
+<p>Results</p>
+<ul>
+<li>Calculated times are within the margin of error and are effectively identical to NOAA's apparent times. Differences are typically under 1 minute.</li>
+<li>Tested locations include New York, London, Tokyo and Sydney. Example: New York on 2025-11-05 matched NOAA apparent sunrise/sunset closely (06:31 / 16:47 local).</li>
+</ul>
+<h2><a id="installation" class="anchor" href="#installation">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>📦 Installation</h2>
+<ol>
+<li>
+<p>Add the dependency to your <code>shard.yml</code>:</p>
+<pre><code class="language-yaml">dependencies:
+  sun_times:
+    github: geocrystal/sun_times</code></pre>
+</li>
+<li>
+<p>Run <code>shards install</code></p>
+</li>
+</ol>
+<h2><a id="usage" class="anchor" href="#usage">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>💻 Usage</h2>
+<pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;sun_times&quot;</span>
+
+<span class="c"># Example: Lviv, Ukraine</span>
+<span class="c"># SunTime.new(latitude : Float64, longitude : Float64)</span>
+sun <span class="o">=</span> <span class="t">SunTimes</span><span class="t">::</span><span class="t">SunTime</span>.new(<span class="n">49.8419</span>, <span class="n">24.0311</span>)
+location <span class="o">=</span> <span class="t">Time</span><span class="t">::</span><span class="t">Location</span>.load(<span class="s">&quot;Europe/Kyiv&quot;</span>)
+date <span class="o">=</span> <span class="t">Time</span>.local
+
+astronomical_dawn_time <span class="o">=</span> sun.astronomical_dawn(date, location)
+nautical_dawn_time <span class="o">=</span> sun.nautical_dawn(date, location)
+civil_dawn_time <span class="o">=</span> sun.civil_dawn(date, location)
+sunrise_time <span class="o">=</span> sun.sunrise(date, location)
+solar_noon_time <span class="o">=</span> sun.solar_noon(date, location)
+sunset_time <span class="o">=</span> sun.sunset(date, location)
+civil_dusk_time <span class="o">=</span> sun.civil_dusk(date, location)
+nautical_dusk_time <span class="o">=</span> sun.nautical_dusk(date, location)
+astronomical_dusk_time <span class="o">=</span> sun.astronomical_dusk(date, location)
+daylight_length <span class="o">=</span> sun.daylight_length(date, location)
+
+puts <span class="s">&quot;Timezone: </span><span class="i">#{</span>location<span class="i">}</span><span class="s">&quot;</span>
+puts <span class="s">&quot;Now:      </span><span class="i">#{</span>date<span class="i">}</span><span class="s">&quot;</span>
+puts
+puts <span class="s">&quot;=== Twilight Periods ===&quot;</span>
+puts <span class="s">&quot;Astronomical dawn:  </span><span class="i">#{</span>astronomical_dawn_time<span class="i">}</span><span class="s">&quot;</span>
+puts <span class="s">&quot;Nautical dawn:      </span><span class="i">#{</span>nautical_dawn_time<span class="i">}</span><span class="s">&quot;</span>
+puts <span class="s">&quot;Civil dawn:         </span><span class="i">#{</span>civil_dawn_time<span class="i">}</span><span class="s">&quot;</span>
+puts <span class="s">&quot;Sunrise:            </span><span class="i">#{</span>sunrise_time<span class="i">}</span><span class="s">&quot;</span>
+puts <span class="s">&quot;Solar noon:         </span><span class="i">#{</span>solar_noon_time<span class="i">}</span><span class="s">&quot;</span>
+puts <span class="s">&quot;Sunset:             </span><span class="i">#{</span>sunset_time<span class="i">}</span><span class="s">&quot;</span>
+puts <span class="s">&quot;Civil dusk:         </span><span class="i">#{</span>civil_dusk_time<span class="i">}</span><span class="s">&quot;</span>
+puts <span class="s">&quot;Nautical dusk:      </span><span class="i">#{</span>nautical_dusk_time<span class="i">}</span><span class="s">&quot;</span>
+puts <span class="s">&quot;Astronomical dusk:  </span><span class="i">#{</span>astronomical_dusk_time<span class="i">}</span><span class="s">&quot;</span>
+puts <span class="s">&quot;&quot;</span>
+puts <span class="s">&quot;=== Daylight ===&quot;</span>
+puts <span class="s">&quot;Daylight:      </span><span class="i">#{</span>daylight_length<span class="i">}</span><span class="s">&quot;</span></code></pre>
+<p>Output:</p>
+<pre><code class="language-crystal">Timezone: Europe/Kyiv
+Now:      2025-11-05 14:05:23 +02:00
+
+=== Twilight Periods ===
+Astronomical dawn:  2025-11-05 05:30:09 +02:00
+Nautical dawn:      2025-11-05 06:07:40 +02:00
+Civil dawn:         2025-11-05 06:46:02 +02:00
+Sunrise:            2025-11-05 07:20:19 +02:00
+Solar noon:         2025-11-05 12:07:24 +02:00
+Sunset:             2025-11-05 16:54:29 +02:00
+Civil dusk:         2025-11-05 17:28:46 +02:00
+Nautical dusk:      2025-11-05 18:07:08 +02:00
+Astronomical dusk:  2025-11-05 18:44:39 +02:00
+
+=== Daylight ===
+Daylight:      9h 34m 9s</code></pre>
+<p><img src="https://github.com/geocrystal/sun_times/blob/main/samples/readme.png?raw=true" alt="readme" /></p>
+<p>You can also get all solar events as a NamedTuple using the <code>events</code> method, which is useful for serialization (e.g., JSON): 📋</p>
+<pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;json&quot;</span>
+<span class="k">require</span> <span class="s">&quot;sun_times&quot;</span>
+
+sun <span class="o">=</span> <span class="t">SunTimes</span><span class="t">::</span><span class="t">SunTime</span>.new(<span class="n">49.8419</span>, <span class="n">24.0311</span>)
+location <span class="o">=</span> <span class="t">Time</span><span class="t">::</span><span class="t">Location</span>.load(<span class="s">&quot;Europe/Kyiv&quot;</span>)
+date <span class="o">=</span> <span class="t">Time</span>.local
+
+sun.events(date, location).to_json</code></pre>
+<p>Output</p>
+<pre><code class="language-json">{
+  &quot;astronomical_dawn&quot;:&quot;2025-11-05T05:30:09+02:00&quot;,
+  &quot;nautical_dawn&quot;:&quot;2025-11-05T06:07:40+02:00&quot;,
+  &quot;civil_dawn&quot;:&quot;2025-11-05T06:46:02+02:00&quot;,
+  &quot;sunrise&quot;:&quot;2025-11-05T07:20:19+02:00&quot;,
+  &quot;solar_noon&quot;:&quot;2025-11-05T12:07:24+02:00&quot;,
+  &quot;sunset&quot;:&quot;2025-11-05T16:54:29+02:00&quot;,
+  &quot;civil_dusk&quot;:&quot;2025-11-05T17:28:46+02:00&quot;,
+  &quot;nautical_dusk&quot;:&quot;2025-11-05T18:07:08+02:00&quot;,
+  &quot;astronomical_dusk&quot;:&quot;2025-11-05T18:44:39+02:00&quot;
+}</code></pre>
+<h3><a id="twilight-periods" class="anchor" href="#twilight-periods">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>🌆 Twilight Periods</h3>
+<p>The library supports three types of twilight periods:</p>
+<ul>
+<li><strong>Civil twilight</strong> 🌅 (sun 6° below horizon): Enough light for most outdoor activities</li>
+<li><strong>Nautical twilight</strong> ⚓ (sun 12° below horizon): Horizon is still visible for navigation</li>
+<li><strong>Astronomical twilight</strong> 🔭 (sun 18° below horizon): Sky is dark enough for astronomical observations</li>
+</ul>
+<p><img src="https://github.com/geocrystal/sun_times/blob/main/samples/twilight_subcategories.png?raw=true" alt="image" /></p>
+<h2><a id="performance" class="anchor" href="#performance">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>🚀 Performance</h2>
+<p>The library is fast as the speed of light! ⚡ Individual calculations are sub-microsecond, and the <code>events</code> method that computes all solar events is still under 4 microseconds per call.</p>
+<p>Benchmark results were obtained on Intel(R) Core(TM) i7-8550U (8) @ 4.00 GHz.</p>
+<p>You can run the benchmark with:</p>
+<pre><code class="language-bash">crystal run --release samples/benchmark.cr</code></pre>
+<h2><a id="contributing" class="anchor" href="#contributing">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>🤝 Contributing</h2>
+<ol>
+<li>Fork it (<a href="https://github.com/geocrystal/sun_times/fork">https://github.com/geocrystal/sun_times/fork</a>)</li>
+<li>Create your feature branch (<code>git checkout -b my-new-feature</code>)</li>
+<li>Commit your changes (<code>git commit -am 'Add some feature'</code>)</li>
+<li>Push to the branch (<code>git push origin my-new-feature</code>)</li>
+<li>Create a new Pull Request</li>
+</ol>
+<h2><a id="contributors" class="anchor" href="#contributors">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>👥 Contributors</h2>
+<ul>
+<li><a href="https://github.com/mamantoha">Anton Maminov</a> - creator and maintainer</li>
+</ul>
+<h2><a id="license" class="anchor" href="#license">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>📄 License</h2>
+<p>This library is distributed under the MIT license. Please see the LICENSE file.</p>
+</div>
+</body>
+</html>
