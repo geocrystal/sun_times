@@ -16,7 +16,9 @@ def format_time_span(span : Time::Span)
   end
 end
 
-sun = SunTimes::SunTime.new(49.8419, 24.0311) # Lviv
+latitude = 49.8419
+longitude = 24.0311
+sun = SunTimes::SunTime.new(latitude, longitude) # Lviv
 location = Time::Location.load("Europe/Kyiv")
 date = Time.local
 # date = Time.local(2025, 6, 21, 0, 0, 0, location: location) # Summer Solstice
@@ -33,6 +35,7 @@ nautical_dusk_time = sun.nautical_dusk?(date, location)
 astronomical_dusk_time = sun.astronomical_dusk?(date, location)
 daylight_length = sun.daylight_length(date, location)
 
+puts "Location: #{latitude}, #{longitude}"
 puts "Timezone: #{location}"
 puts "Now:      #{date}"
 puts
@@ -50,7 +53,7 @@ puts ""
 puts "=== Daylight ==="
 puts "Daylight:      #{format_time_span(daylight_length)}"
 
-if sunset_time && date.in?(sunset_time..sunset_time)
+if sunset_time && date.in?(sunrise_time..sunset_time)
   daylight_left = sunset_time - date
   puts "Daylight left: #{format_time_span(daylight_left)}"
 end
