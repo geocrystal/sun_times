@@ -165,28 +165,10 @@ module SunTimes
     # ```
     def solar_noon(date : Time, location : Time::Location? = nil) : Time
       jd = solar_calculation_day(date)
-
-      # Approximate solar noon (local)
-      n = jd - JULIAN_EPOCH_J2000 - @longitude / 360.0
-
-      # Solar mean anomaly
-      mean_anomaly = normalize_angle(
-        MEAN_ANOMALY_AT_EPOCH + DAILY_MOTION * (jd - JULIAN_EPOCH_J2000)
-      )
-
-      # Ecliptic longitude of the Sun
-      lambda_sun = normalize_angle(
-        mean_anomaly +
-        (EQUATION_CENTER_COEFF_1 * Math.sin(mean_anomaly * DEG2RAD)) +
-        (EQUATION_CENTER_COEFF_2 * Math.sin(2 * mean_anomaly * DEG2RAD)) +
-        (EQUATION_CENTER_COEFF_3 * Math.sin(3 * mean_anomaly * DEG2RAD)) +
-        EARTH_PERIHELION_LONG + 180.0
-      )
+      position = solar_position(jd)
 
       # Compute the Julian Day for local solar noon
-      j_transit = JULIAN_EPOCH_J2000 + n +
-                  CORRECTION_ECCENTRICITY * Math.sin(mean_anomaly * DEG2RAD) -
-                  CORRECTION_OBLIQUITY * Math.sin(2 * lambda_sun * DEG2RAD)
+      j_transit = solar_transit(jd, position[:mean_anomaly], position[:lambda_sun])
 
       from_julian(j_transit, location)
     end
@@ -461,36 +443,16 @@ module SunTimes
     # Returns: Julian Day (JD) value of the event
     private def calculate(date : Time, rise : Bool, altitude : Float64 = SUN_ALTITUDE_RISE_SET) : Float64
       jd = solar_calculation_day(date)
-
-      # Approximate solar noon (local)
-      n = jd - JULIAN_EPOCH_J2000 - @longitude / 360.0
-
-      # Solar mean anomaly
-      mean_anomaly = normalize_angle(MEAN_ANOMALY_AT_EPOCH + DAILY_MOTION * (jd - JULIAN_EPOCH_J2000))
-
-      # Equation of center (orbital eccentricity correction)
-      equation_of_center = EQUATION_CENTER_COEFF_1 * Math.sin(mean_anomaly * DEG2RAD) +
-                           EQUATION_CENTER_COEFF_2 * Math.sin(2 * mean_anomaly * DEG2RAD) +
-                           EQUATION_CENTER_COEFF_3 * Math.sin(3 * mean_anomaly * DEG2RAD)
-
-      # Ecliptic longitude of the Sun (lambda)
-      lambda_sun = normalize_angle(mean_anomaly + equation_of_center + EARTH_PERIHELION_LONG + 180.0)
-
-      # Solar declination (delta)
-      declination = Math.asin(Math.sin(lambda_sun * DEG2RAD) * Math.sin(OBLIQUITY * DEG2RAD)) * RAD2DEG
+      position = solar_position(jd)
 
       # Hour angle at sunrise/sunset/twilight (using specified altitude)
-      h0 = (Math.sin(altitude * DEG2RAD) -
-            Math.sin(@latitude * DEG2RAD) * Math.sin(declination * DEG2RAD)) /
-           (Math.cos(@latitude * DEG2RAD) * Math.cos(declination * DEG2RAD))
+      h0 = hour_angle_cosine(altitude, position[:declination])
       return Float64::NAN if h0.abs > 1 # Polar day/night: no sunrise/sunset/twilight
 
       h0 = Math.acos(h0) * RAD2DEG
 
       # Solar transit (local solar noon)
-      j_transit = JULIAN_EPOCH_J2000 + n +
-                  CORRECTION_ECCENTRICITY * Math.sin(mean_anomaly * DEG2RAD) -
-                  CORRECTION_OBLIQUITY * Math.sin(2 * lambda_sun * DEG2RAD)
+      j_transit = solar_transit(jd, position[:mean_anomaly], position[:lambda_sun])
 
       # Sunrise or sunset Julian date
       j_event = rise ? j_transit - h0 / 360.0 : j_transit + h0 / 360.0
@@ -503,6 +465,18 @@ module SunTimes
 
     private def hour_angle_cosine(date : Time, altitude : Float64) : Float64
       jd = solar_calculation_day(date)
+      position = solar_position(jd)
+
+      hour_angle_cosine(altitude, position[:declination])
+    end
+
+    private def hour_angle_cosine(altitude : Float64, declination : Float64) : Float64
+      (Math.sin(altitude * DEG2RAD) -
+        Math.sin(@latitude * DEG2RAD) * Math.sin(declination * DEG2RAD)) /
+        (Math.cos(@latitude * DEG2RAD) * Math.cos(declination * DEG2RAD))
+    end
+
+    private def solar_position(jd : Float64)
       mean_anomaly = normalize_angle(MEAN_ANOMALY_AT_EPOCH + DAILY_MOTION * (jd - JULIAN_EPOCH_J2000))
       equation_of_center = EQUATION_CENTER_COEFF_1 * Math.sin(mean_anomaly * DEG2RAD) +
                            EQUATION_CENTER_COEFF_2 * Math.sin(2 * mean_anomaly * DEG2RAD) +
@@ -510,9 +484,15 @@ module SunTimes
       lambda_sun = normalize_angle(mean_anomaly + equation_of_center + EARTH_PERIHELION_LONG + 180.0)
       declination = Math.asin(Math.sin(lambda_sun * DEG2RAD) * Math.sin(OBLIQUITY * DEG2RAD)) * RAD2DEG
 
-      (Math.sin(altitude * DEG2RAD) -
-        Math.sin(@latitude * DEG2RAD) * Math.sin(declination * DEG2RAD)) /
-        (Math.cos(@latitude * DEG2RAD) * Math.cos(declination * DEG2RAD))
+      {mean_anomaly: mean_anomaly, lambda_sun: lambda_sun, declination: declination}
+    end
+
+    private def solar_transit(jd : Float64, mean_anomaly : Float64, lambda_sun : Float64) : Float64
+      n = jd - JULIAN_EPOCH_J2000 - @longitude / 360.0
+
+      JULIAN_EPOCH_J2000 + n +
+        CORRECTION_ECCENTRICITY * Math.sin(mean_anomaly * DEG2RAD) -
+        CORRECTION_OBLIQUITY * Math.sin(2 * lambda_sun * DEG2RAD)
     end
 
     # Converts a Gregorian date (year, month, day) to a Julian Day Number (JD)
