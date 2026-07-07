@@ -23,7 +23,7 @@ def random_date(random : Random) : Time
   Time.local(year, month, day)
 end
 
-def benchmark_method(name : String, iterations : Int32, random : Random, &block)
+def benchmark_method(name : String, iterations : Int32, random : Random, &)
   time = Benchmark.measure do
     iterations.times do
       yield

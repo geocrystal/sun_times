@@ -8,11 +8,11 @@ def format_time(t : Time?) : String
 end
 
 def format_time_span(span : Time::Span)
-  String.build do |s|
-    s << "#{span.days}d " if span.days > 0
-    s << "#{span.hours}h " if span.hours > 0
-    s << "#{span.minutes}m " if span.minutes > 0
-    s << "#{span.seconds}s"
+  String.build do |str|
+    str << "#{span.days}d " if span.days > 0
+    str << "#{span.hours}h " if span.hours > 0
+    str << "#{span.minutes}m " if span.minutes > 0
+    str << "#{span.seconds}s"
   end
 end
 

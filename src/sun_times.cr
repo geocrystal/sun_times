@@ -371,49 +371,49 @@ module SunTimes
     # Non-raising convenience variants that return nil when the event does not occur.
     def sunrise?(date : Time, location : Time::Location? = nil) : Time?
       jd = calculate(date, rise: true, altitude: SUN_ALTITUDE_RISE_SET)
-      return nil if jd.nan?
+      return if jd.nan?
       from_julian(jd, location)
     end
 
     def sunset?(date : Time, location : Time::Location? = nil) : Time?
       jd = calculate(date, rise: false, altitude: SUN_ALTITUDE_RISE_SET)
-      return nil if jd.nan?
+      return if jd.nan?
       from_julian(jd, location)
     end
 
     def civil_dawn?(date : Time, location : Time::Location? = nil) : Time?
       jd = calculate(date, rise: true, altitude: SUN_ALTITUDE_CIVIL)
-      return nil if jd.nan?
+      return if jd.nan?
       from_julian(jd, location)
     end
 
     def civil_dusk?(date : Time, location : Time::Location? = nil) : Time?
       jd = calculate(date, rise: false, altitude: SUN_ALTITUDE_CIVIL)
-      return nil if jd.nan?
+      return if jd.nan?
       from_julian(jd, location)
     end
 
     def nautical_dawn?(date : Time, location : Time::Location? = nil) : Time?
       jd = calculate(date, rise: true, altitude: SUN_ALTITUDE_NAUTICAL)
-      return nil if jd.nan?
+      return if jd.nan?
       from_julian(jd, location)
     end
 
     def nautical_dusk?(date : Time, location : Time::Location? = nil) : Time?
       jd = calculate(date, rise: false, altitude: SUN_ALTITUDE_NAUTICAL)
-      return nil if jd.nan?
+      return if jd.nan?
       from_julian(jd, location)
     end
 
     def astronomical_dawn?(date : Time, location : Time::Location? = nil) : Time?
       jd = calculate(date, rise: true, altitude: SUN_ALTITUDE_ASTRONOMICAL)
-      return nil if jd.nan?
+      return if jd.nan?
       from_julian(jd, location)
     end
 
     def astronomical_dusk?(date : Time, location : Time::Location? = nil) : Time?
       jd = calculate(date, rise: false, altitude: SUN_ALTITUDE_ASTRONOMICAL)
-      return nil if jd.nan?
+      return if jd.nan?
       from_julian(jd, location)
     end
 

@@ -446,8 +446,8 @@ describe SunTimes::SunTime do
     singapore = Time::Location.load("Asia/Singapore")
     date = Time.local(2025, 11, 5, location: singapore)
 
-    sunrise = sun.sunrise(date, singapore)
-    sunset = sun.sunset(date, singapore)
+    sun.sunrise(date, singapore)
+    sun.sunset(date, singapore)
     length = sun.daylight_length(date, singapore)
 
     # Near equator should have roughly 12-hour days year-round
