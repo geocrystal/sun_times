@@ -99,7 +99,7 @@ check_accuracy(
 )
 
 # 5. Lviv, Ukraine
-lviv = Time::Location.load("Europe/Kiev")
+lviv = Time::Location.load("Europe/Kyiv")
 date = Time.local(2025, 11, 21, location: lviv)
 check_accuracy(
   "Lviv, Ukraine",

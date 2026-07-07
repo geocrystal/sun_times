@@ -75,6 +75,17 @@ puts "=== Daylight ==="
 puts "Daylight:      #{daylight_length}"
 ```
 
+Latitude must be between `-90.0` and `90.0` degrees. Longitude must be between
+`-180.0` and `180.0` degrees. Invalid coordinates raise
+`SunTimes::InvalidInputError`.
+
+In polar regions, sunrise and sunset may not occur on a given date. The raising
+methods (`sunrise`, `sunset`, and twilight methods) raise
+`SunTimes::CalculationError` when the event does not occur. The non-raising
+variants (`sunrise?`, `sunset?`, and twilight `?` methods) return `nil`.
+`daylight_length` returns `24.hours` for polar day and `Time::Span.zero` for
+polar night.
+
 Output:
 
 ```
