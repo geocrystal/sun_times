@@ -52,6 +52,82 @@ describe SunTimes::SunTime do
     (sunset - expected_sunset).abs.should be < tolerance
   end
 
+  it "matches NOAA apparent sunrise, sunset, and solar noon reference data" do
+    tolerance = 1.minute
+
+    cases = [
+      {
+        name:       "New York, USA",
+        latitude:   40.72,
+        longitude:  -74.02,
+        location:   Time::Location.load("America/New_York"),
+        date:       {2025, 11, 5},
+        sunrise:    {6, 31, 0},
+        sunset:     {16, 47, 0},
+        solar_noon: {11, 39, 37},
+      },
+      {
+        name:       "London, UK",
+        latitude:   51.5,
+        longitude:  -0.13,
+        location:   Time::Location.load("Europe/London"),
+        date:       {2025, 11, 5},
+        sunrise:    {7, 1, 0},
+        sunset:     {16, 26, 0},
+        solar_noon: {11, 44, 3},
+      },
+      {
+        name:       "Tokyo, Japan",
+        latitude:   35.7,
+        longitude:  139.77,
+        location:   Time::Location.load("Asia/Tokyo"),
+        date:       {2025, 11, 5},
+        sunrise:    {6, 7, 0},
+        sunset:     {16, 42, 0},
+        solar_noon: {11, 24, 27},
+      },
+      {
+        name:       "Sydney, Australia",
+        latitude:   -33.87,
+        longitude:  151.22,
+        location:   Time::Location.load("Australia/Sydney"),
+        date:       {2025, 11, 5},
+        sunrise:    {5, 51, 0},
+        sunset:     {19, 27, 0},
+        solar_noon: {12, 38, 39},
+      },
+      {
+        name:       "Lviv, Ukraine",
+        latitude:   49.8419,
+        longitude:  24.0311,
+        location:   Time::Location.load("Europe/Kyiv"),
+        date:       {2025, 11, 21},
+        sunrise:    {7, 46, 0},
+        sunset:     {16, 33, 0},
+        solar_noon: {12, 9, 38},
+      },
+    ]
+
+    cases.each do |test_case|
+      location = test_case[:location]
+      year, month, day = test_case[:date]
+      date = Time.local(year, month, day, location: location)
+      sun = SunTimes::SunTime.new(test_case[:latitude], test_case[:longitude])
+
+      sunrise_hour, sunrise_minute, sunrise_second = test_case[:sunrise]
+      sunset_hour, sunset_minute, sunset_second = test_case[:sunset]
+      noon_hour, noon_minute, noon_second = test_case[:solar_noon]
+
+      expected_sunrise = Time.local(year, month, day, sunrise_hour, sunrise_minute, sunrise_second, location: location)
+      expected_sunset = Time.local(year, month, day, sunset_hour, sunset_minute, sunset_second, location: location)
+      expected_noon = Time.local(year, month, day, noon_hour, noon_minute, noon_second, location: location)
+
+      (sun.sunrise(date, location) - expected_sunrise).abs.should be < tolerance, "#{test_case[:name]} sunrise"
+      (sun.sunset(date, location) - expected_sunset).abs.should be < tolerance, "#{test_case[:name]} sunset"
+      (sun.solar_noon(date, location) - expected_noon).abs.should be < tolerance, "#{test_case[:name]} solar noon"
+    end
+  end
+
   it "produces same results when initialized from tuple vs parameters" do
     paris = Time::Location.load("Europe/Paris")
     date = Time.local(2025, 11, 2, location: paris)
