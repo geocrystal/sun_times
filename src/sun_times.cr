@@ -82,12 +82,14 @@ module SunTimes
     # SunTimes::SunTime.new({48.87, 2.67}) # Paris
     # ```
     def initialize(@latitude : Float64, @longitude : Float64)
+      validate_coordinates
     end
 
     # :ditto:
     def initialize(coords : Tuple(Float64, Float64))
       @latitude = coords[0]
       @longitude = coords[1]
+      validate_coordinates
     end
 
     # ---------------------------------------------------------------------------
@@ -213,8 +215,9 @@ module SunTimes
       jd_rise = calculate(date, rise: true, altitude: SUN_ALTITUDE_RISE_SET)
       jd_set = calculate(date, rise: false, altitude: SUN_ALTITUDE_RISE_SET)
 
-      # If there's no sunrise or sunset (polar night/day), return zero
-      return Time::Span.zero if jd_rise.nan? || jd_set.nan?
+      if jd_rise.nan? || jd_set.nan?
+        return polar_day?(date, SUN_ALTITUDE_RISE_SET) ? 24.hours : Time::Span.zero
+      end
 
       rise = from_julian(jd_rise, location)
       set = from_julian(jd_set, location)
@@ -421,6 +424,16 @@ module SunTimes
     # INTERNAL CALCULATIONS
     # ---------------------------------------------------------------------------
 
+    private def validate_coordinates
+      unless (-90.0..90.0).includes?(@latitude)
+        raise InvalidInputError.new("Latitude must be between -90 and 90 degrees")
+      end
+
+      unless (-180.0..180.0).includes?(@longitude)
+        raise InvalidInputError.new("Longitude must be between -180 and 180 degrees")
+      end
+    end
+
     # Core astronomical calculation.
     #
     # Computes the Julian Day (JD) of sunrise, sunset, or twilight for the given date.
@@ -482,6 +495,24 @@ module SunTimes
       # Sunrise or sunset Julian date
       j_event = rise ? j_transit - h0 / 360.0 : j_transit + h0 / 360.0
       j_event
+    end
+
+    private def polar_day?(date : Time, altitude : Float64) : Bool
+      hour_angle_cosine(date, altitude) < -1
+    end
+
+    private def hour_angle_cosine(date : Time, altitude : Float64) : Float64
+      jd = julian_day(date)
+      mean_anomaly = normalize_angle(MEAN_ANOMALY_AT_EPOCH + DAILY_MOTION * (jd - JULIAN_EPOCH_J2000))
+      equation_of_center = EQUATION_CENTER_COEFF_1 * Math.sin(mean_anomaly * DEG2RAD) +
+                           EQUATION_CENTER_COEFF_2 * Math.sin(2 * mean_anomaly * DEG2RAD) +
+                           EQUATION_CENTER_COEFF_3 * Math.sin(3 * mean_anomaly * DEG2RAD)
+      lambda_sun = normalize_angle(mean_anomaly + equation_of_center + EARTH_PERIHELION_LONG + 180.0)
+      declination = Math.asin(Math.sin(lambda_sun * DEG2RAD) * Math.sin(OBLIQUITY * DEG2RAD)) * RAD2DEG
+
+      (Math.sin(altitude * DEG2RAD) -
+        Math.sin(@latitude * DEG2RAD) * Math.sin(declination * DEG2RAD)) /
+        (Math.cos(@latitude * DEG2RAD) * Math.cos(declination * DEG2RAD))
     end
 
     # Converts a Gregorian date (year, month, day) to a Julian Day Number (JD)

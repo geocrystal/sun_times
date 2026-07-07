@@ -9,6 +9,16 @@ describe SunTimes::SunTime do
     sun.longitude.should eq 2.67
   end
 
+  it "rejects invalid coordinates" do
+    expect_raises(SunTimes::InvalidInputError, "Latitude must be between -90 and 90 degrees") do
+      SunTimes::SunTime.new(91.0, 0.0)
+    end
+
+    expect_raises(SunTimes::InvalidInputError, "Longitude must be between -180 and 180 degrees") do
+      SunTimes::SunTime.new(0.0, 181.0)
+    end
+  end
+
   it "computes correct sunrise and sunset times for London" do
     sun = SunTimes::SunTime.new(51.5, -0.13)
     london = Time::Location.load("Europe/London")
@@ -232,16 +242,7 @@ describe SunTimes::SunTime do
     utc = Time::Location.load("UTC")
     date = Time.local(2025, 6, 21, location: utc) # Summer solstice
 
-    # This should either raise an error or return a very long day
-    # Let's test what actually happens - it depends on exact latitude and date
-    begin
-      length = sun.daylight_length(date, utc)
-      # If it doesn't raise, day should be very long (> 20 hours) or zero
-      (length > 20.hours || length == Time::Span.zero).should be_true
-    rescue SunTimes::CalculationError
-      # If it raises, that's also acceptable for polar day
-      true.should be_true
-    end
+    sun.daylight_length(date, utc).should eq 24.hours
   end
 
   it "computes civil twilight times correctly" do
@@ -340,9 +341,7 @@ describe SunTimes::SunTime do
       sun.civil_dusk(date, oslo)
     end
 
-    # Day length should be 24 hours or 0 (implementation dependent)
-    length = sun.daylight_length(date, oslo)
-    (length == 24.hours || length == 0.seconds).should be_true
+    sun.daylight_length(date, oslo).should eq 24.hours
   end
 
   it "provides non-raising `?` variants that match raising methods for normal locations" do
