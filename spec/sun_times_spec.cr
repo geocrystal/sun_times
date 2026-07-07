@@ -1,6 +1,22 @@
 require "./spec_helper"
 
+module SunTimes
+  class SunTime
+    def __spec_julian_day(date : Time) : Float64
+      julian_day(date)
+    end
+  end
+end
+
 describe SunTimes::SunTime do
+  it "converts calendar dates to known Julian Day values at UTC midnight" do
+    sun = SunTimes::SunTime.new(0.0, 0.0)
+
+    sun.__spec_julian_day(Time.utc(1970, 1, 1)).should eq 2_440_587.5
+    sun.__spec_julian_day(Time.utc(2000, 1, 1)).should eq 2_451_544.5
+    sun.__spec_julian_day(Time.utc(2025, 11, 5)).should eq 2_460_984.5
+  end
+
   it "can be initialized from a tuple" do
     coords = {48.87, 2.67}
     sun = SunTimes::SunTime.new(coords)

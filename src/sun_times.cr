@@ -59,7 +59,7 @@ module SunTimes
     JULIAN_MONTH_FACTOR = 30.6001 # Conversion factor for month contribution
     JULIAN_EPOCH_OFFSET =    4716 # Year offset for astronomical epoch
     JULIAN_BASE_OFFSET  =  1524.5 # Aligns JD 0 = 4713 BCE Jan 1 12:00 UT
-    JULIAN_MIDNIGHT_FIX =     0.5 # Converts JD from noon to 00:00 UTC
+    JULIAN_NOON_OFFSET  =     0.5 # Converts midnight JD to noon JD for solar calculations
 
     # ---------------------------------------------------------------------------
     # Epoch conversion constants
@@ -164,7 +164,7 @@ module SunTimes
     # => 2025-11-02 12:32:50 +01:00
     # ```
     def solar_noon(date : Time, location : Time::Location? = nil) : Time
-      jd = julian_day(date)
+      jd = solar_calculation_day(date)
 
       # Approximate solar noon (local)
       n = jd - JULIAN_EPOCH_J2000 - @longitude / 360.0
@@ -460,7 +460,7 @@ module SunTimes
     #
     # Returns: Julian Day (JD) value of the event
     private def calculate(date : Time, rise : Bool, altitude : Float64 = SUN_ALTITUDE_RISE_SET) : Float64
-      jd = julian_day(date)
+      jd = solar_calculation_day(date)
 
       # Approximate solar noon (local)
       n = jd - JULIAN_EPOCH_J2000 - @longitude / 360.0
@@ -502,7 +502,7 @@ module SunTimes
     end
 
     private def hour_angle_cosine(date : Time, altitude : Float64) : Float64
-      jd = julian_day(date)
+      jd = solar_calculation_day(date)
       mean_anomaly = normalize_angle(MEAN_ANOMALY_AT_EPOCH + DAILY_MOTION * (jd - JULIAN_EPOCH_J2000))
       equation_of_center = EQUATION_CENTER_COEFF_1 * Math.sin(mean_anomaly * DEG2RAD) +
                            EQUATION_CENTER_COEFF_2 * Math.sin(2 * mean_anomaly * DEG2RAD) +
@@ -520,7 +520,6 @@ module SunTimes
     #
     # Implements the standard USNO/Meeus algorithm.
     private def julian_day(date : Time) : Float64
-      date = date + 1.day
       y = date.year
       m = date.month
       d = date.day
@@ -536,7 +535,11 @@ module SunTimes
       jd = (JULIAN_YEAR_DAYS * (y + JULIAN_EPOCH_OFFSET)).floor +
            (JULIAN_MONTH_FACTOR * (m + 1)).floor +
            d + b - JULIAN_BASE_OFFSET
-      jd - JULIAN_MIDNIGHT_FIX
+      jd
+    end
+
+    private def solar_calculation_day(date : Time) : Float64
+      julian_day(date) + JULIAN_NOON_OFFSET
     end
 
     # Converts a Julian Day (JD) to a Crystal Time instance.
